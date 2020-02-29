@@ -5,7 +5,7 @@ const stripe = require("stripe")("sk_test_9M2anU89BRFyWZiaFL99fP4h00DLC8OHWS");
 const Project = require("../models/project");
 const User = require('../models/user');
 const bodyParser = require("body-parser");
-const endpointSecret = 'whsec_Bhly6kc3GPQRpil3vPIWD2NxCQfMqGyF';
+const endpointSecret = 'whsec_rgYc7DPXfWEWwtXwCVGKeWquNQHZiYpy';
 
 router.get("/pay/:projectId", async function(req, res) {
   const projectId = req.params.projectId;
