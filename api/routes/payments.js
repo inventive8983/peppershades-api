@@ -25,9 +25,6 @@ router.get("/pay/:projectId", async function(req, res) {
       metadata:{
         projectId: projectId
       },
-      payment_intent_data: {
-        capture_method: "manual"
-      },
       success_url: "https://www.google.com",
       cancel_url: "https://www.yahoo.com"
     }).then(session => {
