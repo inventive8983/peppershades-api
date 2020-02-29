@@ -6,7 +6,14 @@ const str = multer.diskStorage(
 {
     destination: function(req,file,cb)
     {   
-        const uploadPath = `./static/uploads/${req.params.projectId}`
+        var uploadPath
+        if(req.query.type === 'profile'){
+          uploadPath = `./static/profile/${req.session.passport.user.user._id}`
+        }
+        else{
+          uploadPath = `./static/uploads/${req.params.projectId}`
+        }
+        
         fs.exists(uploadPath, function(exists) {
             if(exists) {
                 cb(null,uploadPath)
