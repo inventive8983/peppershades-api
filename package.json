@@ -1,0 +1,57 @@
+{
+    "name": "Peppershades",
+    "version": "1.0.0",
+    "description": "Peppershades Rest API",
+    "author": "Peppershades Technologies",
+    "private": false,
+    "scripts": {
+        "build": "node build/build.js",
+        "server": "nodemon server.js",
+        "json:server": "json-server --watch db.json"
+    },
+    "dependencies": {
+        "@hapi/joi": "^16.1.8",
+        "axios": "^0.19.0",
+        "bcryptjs": "^2.4.3",
+        "body-parser": "^1.19.0",
+        "connect-mongo": "^3.2.0",
+        "cookie-parser": "^1.4.4",
+        "cookie-session": "^1.3.3",
+        "cookies": "^0.8.0",
+        "cors": "^2.8.5",
+        "express": "^4.17.1",
+        "express-fileupload": "^1.1.6",
+        "express-session": "^1.17.0",
+        "fs": "0.0.1-security",
+        "gridfs-stream": "^1.1.1",
+        "image-to-base64": "^2.0.1",
+        "json-server": "^0.15.1",
+        "jsonwebtoken": "^8.5.1",
+        "lightbox2": "^2.11.1",
+        "module": "^1.2.5",
+        "mongoose": "^5.9.1",
+        "morgan": "^1.9.1",
+        "multer": "^1.4.2",
+        "multer-gridfs-storage": "^4.0.2",
+        "node-redis-store": "^0.10.0",
+        "nodemailer": "^6.4.2",
+        "nodemon": "^1.19.4",
+        "passport": "^0.4.1",
+        "passport-local": "^1.0.0",
+        "stripe": "^8.20.0"
+    },
+    "devDependencies": {
+        "autoprefixer": "^7.1.2",
+        "node-notifier": "^5.1.2",
+        "optimize-css-assets-webpack-plugin": "^3.2.0",
+        "ora": "^1.2.0",
+        "portfinder": "^1.0.13",
+        "rimraf": "^2.6.0",
+        "semver": "^5.3.0",
+        "shelljs": "^0.7.6"
+    },
+    "engines": {
+        "node": ">= 6.0.0",
+        "npm": ">= 3.0.0"
+    }
+}
