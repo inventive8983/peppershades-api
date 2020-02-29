@@ -17,13 +17,16 @@ router.get("/pay/:projectId", async function(req, res) {
         {
           name: project.name,
           description: "Inclusive of 2% transaction charges",
-          amount: (project.pay.totalAmount - project.pay.paidAmount) * 100,
+          amount: (project.pay.totalAmount) * 100,
           currency: "inr",
           quantity: 1
         }
       ],
       metadata:{
         projectId: projectId
+      },
+      payment_intent_data: {
+        capture_method: "manual"
       },
       success_url: "https://www.google.com",
       cancel_url: "https://www.yahoo.com"
@@ -36,7 +39,7 @@ router.get("/pay/:projectId", async function(req, res) {
     
   });
 
-router.post('/webhook', bodyParser.raw({type: '*/*'}), (request, response) => {
+router.post('/webhook', bodyParser.raw({type: 'application/json'}), (request, response) => {
   const sig = request.headers['stripe-signature'];
 
   let event;
@@ -59,10 +62,10 @@ router.post('/webhook', bodyParser.raw({type: '*/*'}), (request, response) => {
           "pay.txnID": session.id
         }}
       ).then(result=>{
-        console.log(result)
+        console.log("Success")
       }).catch(err=>{
         console.log(err)
-        response.status(400).json({
+        res.status(400).json({
             message:err
         })
     })
