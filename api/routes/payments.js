@@ -59,10 +59,10 @@ router.post('/webhook', bodyParser.raw({type: '*/*'}), (request, response) => {
           "pay.txnID": session.id
         }}
       ).then(result=>{
-        console.log("Success")
+        console.log(result)
       }).catch(err=>{
         console.log(err)
-        res.status(400).json({
+        response.status(400).json({
             message:err
         })
     })
