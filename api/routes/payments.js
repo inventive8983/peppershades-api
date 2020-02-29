@@ -5,7 +5,7 @@ const stripe = require("stripe")("sk_test_9M2anU89BRFyWZiaFL99fP4h00DLC8OHWS");
 const Project = require("../models/project");
 const User = require('../models/user');
 const bodyParser = require("body-parser");
-const endpointSecret = 'whsec_eQdVjsWXIIPAXVNhYzBlA2y5nJ9oGbil';
+const endpointSecret = 'whsec_Bhly6kc3GPQRpil3vPIWD2NxCQfMqGyF';
 
 router.get("/pay/:projectId", async function(req, res) {
   const projectId = req.params.projectId;
@@ -17,7 +17,7 @@ router.get("/pay/:projectId", async function(req, res) {
         {
           name: project.name,
           description: "Inclusive of 2% transaction charges",
-          amount: (project.pay.totalAmount) * 100,
+          amount: (project.pay.totalAmount - project.pay.paidAmount) * 100,
           currency: "inr",
           quantity: 1
         }
@@ -39,7 +39,7 @@ router.get("/pay/:projectId", async function(req, res) {
     
   });
 
-router.post('/webhook', bodyParser.raw({type: 'application/json'}), (request, response) => {
+router.post('/webhook', (request, response) => {
   const sig = request.headers['stripe-signature'];
 
   let event;
