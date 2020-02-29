@@ -190,6 +190,7 @@ router.post('/reset', async (req, res) => {
 router.patch('/password/reset', async (req, res) => {   
 
     
+
 })
 
     // for updating the e -mail
@@ -264,25 +265,28 @@ router.patch("/update", async (req, res) => {
 
 //For updating the password
 
- router.patch('/password/change/:id', async (req, res) => {    
+ router.patch('/password/change',auth, async (req, res) => {    
 
-     const thisUser = await User.findOne({_id: req.params.id})
-     if(!thisUser) return res.status(400).send("User does not exist")
 
-     const pass = await bcrypt.compare(req.body.oldPassword, thisUser.password)
-     if(!pass) return res.status(400).send("Password is incorrect")
-    
-     const salt = await bcrypt.genSalt(10)
-     const hashPassword = await bcrypt.hash(req.body.newPassword, salt)  
+    const id = req.session.passport.user.user._id
 
-    
-         await User.updateOne({_id: req.params.id}, {
-         $set: {"password": hashPassword}
-         }).then( result => {
-             res.send("Updated Successfully")
-         }).catch(err => {
-             res.sendStatus(403)
-         }) 
+     await User.findOne({_id: id}).then(async account => {
+        const pass = await bcrypt.compare(req.body.oldPassword, account.password)
+        if(!pass) return res.status(400).send("Password is incorrect")
+
+        const salt = await bcrypt.genSalt(10)
+        const hashPassword = await bcrypt.hash(req.body.newPassword, salt)  
+
+        await User.updateOne({_id: account._id}, {
+            $set: {"password": hashPassword}
+            }).then( result => {
+                res.send(result)
+            }).catch(err => {
+                res.sendStatus(403)
+        })
+
+     })
+     
 
  }) 
 
