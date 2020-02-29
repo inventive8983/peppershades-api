@@ -23,6 +23,8 @@ const paymentRoutes = require('./api/routes/payments')
 app.use(express.static('static'))
 app.use(morgan("dev"));
 app.use(cors());
+
+
 app.use((req, res, next) => {
   if (req.originalUrl === '/payment/webhook') {
     next();
@@ -31,6 +33,8 @@ app.use((req, res, next) => {
     bodyParser.urlencoded({ extended: false })
   }
 });
+
+
 app.use(cookieParser());
 
 // Express Session

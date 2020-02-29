@@ -39,7 +39,7 @@ router.get("/pay/:projectId", async function(req, res) {
     
   });
 
-router.post('/webhook', (request, response) => {
+router.post('/webhook', bodyParser.raw({type: '*/*'}), (request, response) => {
   const sig = request.headers['stripe-signature'];
 
   let event;
