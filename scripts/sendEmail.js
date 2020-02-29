@@ -1,19 +1,19 @@
 const nodemailer = require('nodemailer');
 
 let transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false,
-    requireTLS: true,
+    host: 'smtp.zoho.in',
+    port: 465,
+    secure: true,
     auth: {
-        user: 'media.peppershades@gmail.com',
-        pass: 'media.peppershades2019'
+        user: 'media@peppershades.com',
+        pass: 'DTqAHt!c36i9Yut'
     }
 });
 
 module.exports = (to, subject, html, callback) => {
+    
     let mailOptions = {
-    from: '"Peppershades" <media.peppershades@gmail.com>',
+    from: '"Peppershades" <media@peppershades.com>',
     to: to,
     subject: subject,
     html: html

@@ -160,15 +160,16 @@ router.get('/setverify/', async (req, res) => {
 
 //For password
 router.post('/reset', async (req, res) => {
-        await User.find({email: req.body.email})
+        await User.findOne({email: req.body.email})
         .then(user => {
             jwt.sign({_id: user._id}, 'secret-token', (err, token) => {
                 if(err){
                     res.status(500)
                 }
+                console.log(token)
                 sendEmail(req.body.email, 
                     "Reset Password", 
-                    `<a href="www.peppershades.com/password/reset/${token}"></h3>`, async (success, message) => {
+                    token, async (success, message) => {
                             if(success){
                                 res.status(200).json({
                                     type: 'Success',
