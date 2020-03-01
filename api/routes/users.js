@@ -121,7 +121,7 @@ router.get('/verify',auth, (req, res) => {
 
     const hashEmail = jwt.sign({email: req.body.email},'sbchasjcjssjbxbsj');
    
-    console.log(hashEmail)
+    res.send(hashEmail)
     //console.log(hashEmail);
     //const html = '<a href="www.peppershades.com/verify/' + hashEmail + '"> Click here to verify email </a>'
 
