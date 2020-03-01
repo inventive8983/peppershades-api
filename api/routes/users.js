@@ -117,9 +117,10 @@ router.get("/logout", (req, res) => {
 
 //for email
 
-router.get('/verify',auth, (req, res) => {       
+router.get('/verify',auth, (req, res) => {      
 
-    const hashEmail = jwt.sign({email: req.body.email},'sbchasjcjssjbxbsj');
+    
+    const hashEmail = jwt.sign({email: req.body.email});
    
     res.send(hashEmail)
     //console.log(hashEmail);
