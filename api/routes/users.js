@@ -120,9 +120,10 @@ router.get("/logout", (req, res) => {
 router.get('/verify', (req, res) => {       
 
    // const hashEmail = jwt.sign({email: req.body.email},'sbchasjcjssjbxbsj');
+   console.log("Dfdfdsf")
     res.json(
         {
-            message:"vishu"
+            message:"vishu",
         }
     )
     //console.log(hashEmail);
