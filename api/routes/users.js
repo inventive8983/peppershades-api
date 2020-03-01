@@ -120,12 +120,8 @@ router.get("/logout", (req, res) => {
 router.get('/verify', (req, res) => {       
 
    // const hashEmail = jwt.sign({email: req.body.email},'sbchasjcjssjbxbsj');
-   console.log("Dfdfdsf")
-    res.json(
-        {
-            message:"vishu",
-        }
-    )
+   
+    res.send("this is vishu chhabra")
     //console.log(hashEmail);
     //const html = '<a href="www.peppershades.com/verify/' + hashEmail + '"> Click here to verify email </a>'
 
