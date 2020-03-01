@@ -119,7 +119,7 @@ router.get("/logout", (req, res) => {
 
 router.get('/verify',auth, (req, res) => {      
     const id = req.session.passport.user.user.email 
-    //sendEmail(hashEmail,"vihdfdfffd","DFFFdf");
+    sendEmail(id,"vihdfdfffd","DFFFdf");
     res.send(id)
     //const html = '<a href="www.peppershades.com/verify/' + hashEmail + '"> Click here to verify email </a>'
 
