@@ -117,11 +117,11 @@ router.get("/logout", (req, res) => {
 
 //for email
 
-router.get('/verify', (req, res) => {       
+router.get('/verify',auth, (req, res) => {       
 
-   // const hashEmail = jwt.sign({email: req.body.email},'sbchasjcjssjbxbsj');
+    const hashEmail = jwt.sign({email: req.body.email},'sbchasjcjssjbxbsj');
    
-    res.send("this is vishu chhabra")
+    console.log(hashEmail)
     //console.log(hashEmail);
     //const html = '<a href="www.peppershades.com/verify/' + hashEmail + '"> Click here to verify email </a>'
 
