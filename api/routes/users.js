@@ -196,7 +196,10 @@ router.patch('/password/reset', async (req, res) => {
     // for updating the e -mail
 router.patch("/update", async (req, res) => {
 
-    if( req.body.email)
+    const id = req.session.passport.user.user._id
+    let updated = 0
+
+    if(req.body.check.email)
     {
         val = req.body.check.email
         if(User.find({email:val}))
@@ -245,7 +248,7 @@ router.patch("/update", async (req, res) => {
         })
     }
     if(req.body.check.jobTitle === true){
-        User.updateOne({_id: id}, {$set: { jobTitle: req.body.jobTitle}})
+        User.updateOne({_id: id}, {$set: { "jobTitle": req.body.jobTitle}})
         .then(result => {
             console.log(result)
             updated =updated +1
