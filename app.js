@@ -1,39 +1,37 @@
-const express = require('express')
-const app = express()
-const morgan = require('morgan')
-const bodyParser = require('body-parser')
-const mongoose = require('mongoose')
-const session = require('express-session')
-const passport = require('passport')
-const cors = require('cors')
-const MongoStore = require('connect-mongo')(session);
-const cookieParser = require('cookie-parser')
+const express = require("express");
+const app = express();
+const morgan = require("morgan");
+const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
+const session = require("express-session");
+const passport = require("passport");
+const cors = require("cors");
+const MongoStore = require("connect-mongo")(session);
+const cookieParser = require("cookie-parser");
 
 // Config Passport
 require("./config/passport")(passport);
 
 // Routes
-const projectRoutes = require('./api/routes/projects')
-const supportRoutes = require('./api/routes/support')
-const userRoutes = require('./api/routes/users')
-const freelancerRoutes = require('./api/routes/freelancers')
-const paymentRoutes = require('./api/routes/payments')
+const projectRoutes = require("./api/routes/projects");
+const supportRoutes = require("./api/routes/support");
+const userRoutes = require("./api/routes/users");
+const freelancerRoutes = require("./api/routes/freelancers");
+const paymentRoutes = require("./api/routes/payments");
 
 // App Middlewares
-app.use(express.static('static'))
+app.use(express.static("static"));
 app.use(morgan("dev"));
 app.use(cors());
 
-
 app.use((req, res, next) => {
-  if (req.originalUrl === '/payment/webhook') {
+  if (req.originalUrl === "/payment/webhook") {
     next();
   } else {
     bodyParser.json()(req, res, next);
-    bodyParser.urlencoded({ extended: false })
+    bodyParser.urlencoded({ extended: false });
   }
 });
-
 
 app.use(cookieParser());
 
@@ -58,11 +56,11 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Route Middlewares
-app.use('/project', projectRoutes)
-app.use('/user', userRoutes)
-app.use('/freelancer', freelancerRoutes)
-app.use('/payment', paymentRoutes)
-app.use('/support', supportRoutes)
+app.use("/api/project", projectRoutes);
+app.use("/api/user", userRoutes);
+app.use("/api/freelancer", freelancerRoutes);
+app.use("/api/payment", paymentRoutes);
+app.use("/api/support", supportRoutes);
 
 // 404 Not Found
 app.use((req, res, next) => {
@@ -99,7 +97,7 @@ const connectDB = async () => {
     console.log("MongoDB is live on Atlas...");
   } catch (err) {
     console.error(err.message);
-    console.log("Using local database")
+    console.log("Using local database");
     mongoose.connect("mongodb://localhost/peppershades", {
       useNewUrlParser: true,
       useUnifiedTopology: true
