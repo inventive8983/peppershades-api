@@ -9,7 +9,7 @@ const User = require('../models/user')
 const token = 'inh#$ygf^&tejd457867bct5we64r//@342?SDGER34fyt5d5t@'
 
 //for checking the current status
-router.get('/projects/:token', (req,res )=>
+router.get('/projects', (req,res )=>
 {
 
     if(req.params.token !== token)
@@ -245,6 +245,23 @@ router.get('/issues/get/:token',(req,res)=>
         })
 })
 
+router.get('/updateIssue/:status/:reportId', (req, res) => {
+    Issues.findOneAndUpdate({_id: req.params.reportId}, {
+        $set: {
+            "status": req.params.status
+        }
+    }).then(result => {
+        res.status(200).json({
+            type: 'success',
+            message: 'Updated Successfully',
+            data: result
+        })
+    })
+    .catch(err => {
+        console.log(err)
+        res.status(400)
+    })
+})
 
 
 
