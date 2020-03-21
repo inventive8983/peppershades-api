@@ -110,6 +110,30 @@ router.post('/login', async (req, res, next) => {
     }    
 })
 
+router.get('/projects', (req,res )=>
+{
+
+    const current= req.query.currentStatus;
+
+    Project.find({currentStatus:current})
+    .then(result=>{
+        res.status(200).json({
+            type:"success",
+            message:"Status sent successfully",
+            data: result
+        })
+    })
+    .catch(err=>
+        {
+
+            res.status(400).json({
+                type:"error",
+                message:"there is an error",
+                data:err
+            })
+        })
+
+})
 
 
 module.exports=router
