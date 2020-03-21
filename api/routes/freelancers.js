@@ -110,12 +110,12 @@ router.post('/login', async (req, res, next) => {
     }    
 })
 
-router.get('/allprojects', (req, res)=>
+router.get('/allprojects', (req, res) =>
 {
 
-    const current= req.query.currentStatus;
+    // const current= req.query.currentStatus;
 
-    Project.find({currentStatus:current})
+    Project.find()
     .then(result=>{
         res.status(200).json({
             type:"success",
