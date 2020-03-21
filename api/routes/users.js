@@ -124,7 +124,9 @@ router.get('/verify', (req, res) => {
     
 })
 
-
+router.get('/hello',  (req, res) => {
+    res.send("Hello")
+})
 
 router.get('/setverify/', async (req, res) => {
     
