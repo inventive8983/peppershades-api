@@ -12,13 +12,9 @@ const token = 'inh#$ygf^&tejd457867bct5we64r//@342?SDGER34fyt5d5t@'
 router.get('/projects', (req,res )=>
 {
 
-    if(req.params.token !== token)
-    res.status(400).send("Invalid User")    
-
     const current= req.query.currentStatus;
 
     Project.find({currentStatus:current})
-
     .then(result=>{
         res.status(200).json({
             type:"success",
@@ -39,10 +35,8 @@ router.get('/projects', (req,res )=>
 })
 //assign freelancer to a project
 
-router.patch('/freelancer/assign/:projectId/:token',(req, res)=> {
+router.patch('/freelancer/assign/:projectId',(req, res)=> {
 
-    if(req.params.token !== token)
-    res.status(400).send("Invalid User")  
 
     const id =req.body.id
     const projectId = req.params.projectId
@@ -70,10 +64,8 @@ router.patch('/freelancer/assign/:projectId/:token',(req, res)=> {
 
 //for filtering the freelancers
 
-router.get('/freelancers/:token', (req, res)=>
+router.get('/freelancers/', (req, res)=>
 {    
-    if(req.params.token !== token)
-    res.status(400).send("Invalid User")  
 
    let quer ={}
 
@@ -109,10 +101,8 @@ router.get('/freelancers/:token', (req, res)=>
 
 //remove freelancer from the project
 
-router.patch('/freelancer/remove/:projectId/:token',(req, res)=>
+router.patch('/freelancer/remove/:projectId',(req, res)=>
 {   
-    if(req.params.token !== token)
-    res.status(400).send("Invalid User")  
 
     const id =req.body.id
     const projectId = req.params.projectId
@@ -137,11 +127,9 @@ router.patch('/freelancer/remove/:projectId/:token',(req, res)=>
 
 //undecline the project 
 
-router.patch('/undecline/:projectId/:token',(req, res) =>
+router.patch('/undecline/:projectId',(req, res) =>
 
 {   
-    if(req.params.token !== token)
-    res.status(400).send("Invalid User")  
 
     const id = req.params.projectId
     Project.updateOne({_id:id},{$set:{declineStatus:false}})
@@ -221,11 +209,8 @@ router.post('/issues/add', auth, (req,res)=>
 
 //isssues get rest api based on solved and unsolved
 
-router.get('/issues/get/:token',(req,res)=>
+router.get('/issues/get',(req,res)=>
 {
-    if(req.params.token !== token)
-    res.status(400).send("Invalid User")  
-
     const status = req.query.status
     Issues.find({status:status})
     .then(result=>
