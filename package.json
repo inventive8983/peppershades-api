@@ -38,6 +38,7 @@
         "nodemon": "^1.19.4",
         "passport": "^0.4.1",
         "passport-local": "^1.0.0",
+        "socket-io": "^1.0.0",
         "socket.io": "^2.3.0",
         "stripe": "^8.20.0"
     },

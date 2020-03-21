@@ -60,7 +60,7 @@ app.use("/api/project", projectRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/freelancer", freelancerRoutes);
 app.use("/api/payment", paymentRoutes);
-app.use("/api/support", supportRoutes);
+app.use("/api/mysupport", supportRoutes);
 
 // 404 Not Found
 app.use((req, res, next) => {
