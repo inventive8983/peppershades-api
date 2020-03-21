@@ -110,7 +110,7 @@ router.post('/login', async (req, res, next) => {
     }    
 })
 
-router.get('/projects', (req,res )=>
+router.get('/allprojects', (req,res )=>
 {
 
     const current= req.query.currentStatus;
