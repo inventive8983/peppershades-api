@@ -98,8 +98,11 @@ router.post('/login', async (req, res, next) => {
 
 router.get("/currentuser", auth, async (req, res) => {
 
-    if(req.session.passport){
+    if(req.isAuthenticated()){
          res.status(200).send(req.session.passport.user)
+    }
+    else{
+        res.send(403).send("User does not exist")
     }
    
 })
