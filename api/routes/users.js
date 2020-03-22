@@ -119,44 +119,49 @@ router.get("/logout", (req, res) => {
 
 router.get('/verify', (req, res) => {       
 
-    const hashEmail = jwt.sign({email: req.body.email},'sbchasjcjssjbxbsj');
-    const html = '<a href="www.peppershades.com/verify/' + hashEmail + '"> Click here to verify email </a>'
+    if(req.session.passport.user.userGroup === 'user'){
+        const email = req.session.passport.user.user.email
+        const hashEmail = jwt.sign({email: req.body.email},'token-secret-key');
+
+        const html = '<a href="www.peppershades.com/api/setverify/' + hashEmail + '"> Click here to verify email </a>'
+
+        sendEmail(email, "Verify your email", html, (success, message) => {
+            if(success){
+                res.status(200).json({
+                    type: "success",
+                    message: "Email Sent Successfully"
+                })
+            }
+            else{
+                res.status(403).json({
+                    type: "error",
+                    message: "Some error is sending Email"
+                })
+            }
+        })
+    }
+
+    
     
 })
 
-router.get('/hello',  (req, res) => {
-    res.send("Hello")
-})
 
-router.get('/setverify/', async (req, res) => {
-    
-    const id = req.session.passport.User;
-
-    const user = User.findOne({_id : id});
-   
-    const verified = jwt.verify(req.body.token ,{email : user.email} );
+router.get('/setverify/:token', async (req, res) => {
+       
+    const verified = jwt.verify(req.params.token , 'token-secret-key' );
     if(verified){
-       user.updateOne({_id : id},
+       user.updateOne({email : verified.email},
         {$set : {
             verified : true
         }}).then(result => {
             console.log("User Verified")
-            res.status(200).json({
-                type: "Success",
-                message: "Email Verified Successfully",
-                data: result
-            })
+            res.status(200).redirect('http://www.peppershades.com/emailverify/')
+        }).catch(err => {
+            res.status(400).send(err)
         })
-
     }
-
-    res.status(403).json({
-        type: "Error",
-        message: "Email Verification Failed"
-    })
  
  })
-
 
 //For password
 router.post('/reset', async (req, res) => {

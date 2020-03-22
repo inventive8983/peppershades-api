@@ -9,7 +9,7 @@ const User = require('../models/user')
 const token = 'inh#$ygf^&tejd457867bct5we64r//@342?SDGER34fyt5d5t@'
 
 //for checking the current status
-router.get('/projects', (req,res )=>
+router.get('/projects', (req,res)=>
 {
 
     const current= req.query.currentStatus;
