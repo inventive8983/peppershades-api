@@ -97,7 +97,8 @@ router.post('/login', async (req, res, next) => {
 })
 
 router.get("/currentuser",async (req, res) => {
-
+    
+    console.log(req.session.passport)
     if(req.isAuthenticated()){
          res.status(200).send(req.session.passport.user)
     }
