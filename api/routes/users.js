@@ -96,7 +96,21 @@ router.post('/login', async (req, res, next) => {
     }    
 })
 
-router.get("/currentuser",async (req, res) => {
+router.get("/getone/:id", auth, async (req, res) => {
+    User.findOne({_id: req.params.id}).then(result => {
+        delete result.password
+        res.status(200).json({
+            type: "success",
+            message: "User found",
+            user: result
+        })
+        .catch(err => {
+            res.status(400)
+        })
+    })
+})
+
+router.get("/currentuser", async (req, res) => {
     
     console.log(req.session.passport)
     if(req.isAuthenticated()){
@@ -109,7 +123,6 @@ router.get("/currentuser",async (req, res) => {
 })
 
 router.get("/logout", (req, res) => {
-    console.log("ewfakajwekf")
     
     req.logout()
     console.log(req.session)
@@ -127,7 +140,7 @@ router.get('/verify', (req, res) => {
         const email = req.session.passport.user.user.email
         const hashEmail = jwt.sign({email: req.body.email},'token-secret-key');
 
-        const html = '<a href="http://localhost:4000/api/user/setverify/' + hashEmail + '"> Click here to verify email </a>'
+        const html = '<a href="http://peppershades.com/api/user/setverify/' + hashEmail + '"> Click here to verify email </a>'
 
         sendEmail(email, "Verify your email", html, (success, message) => {
             if(success){
@@ -160,7 +173,7 @@ router.get('/setverify/:token', async (req, res) => {
             verified : true
         }}).then(result => {
             console.log("User Verified")
-            res.status(200).redirect('http://www.peppershades.com/emailverify/')
+            res.status(200).redirect('http://peppershades.com/emailverify/')
         }).catch(err => {
             res.status(400).send(err)
         })
