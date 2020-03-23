@@ -8,7 +8,7 @@ const str = multer.diskStorage(
     {   
         var uploadPath
         if(req.query.type === 'profile'){
-          uploadPath = `./static/profile/${req.session.passport.user.user._id}`
+          uploadPath = `./static/profile/`
         }
         else{
           uploadPath = `./static/uploads/${req.params.projectId}`
@@ -22,22 +22,29 @@ const str = multer.diskStorage(
               fs.mkdir(uploadPath, function(err) {
                 if(err) {
                   console.log('Error in folder creation');
-                  res.send(err)
+                  cb(err,uploadPath)
                 }  
                 console.log("New folder created")
+                cb(null,uploadPath)
               })
             }
          })
+
         
     },
     filename: function(req,file,cb)
     {
-             if(file.mimetype ==='image/png' || file.mimetype ==='image/jpeg' || file.mimetype ==='image/jpg')
-             {
-                 var name=  req.session.passport.user.user._id + '_' +
-                 + Date.now() +Math.floor((Math.random() * 100000) + 1)+ ".png"
+             if(req.query.type === 'profile'){
+                var name = req.session.passport.user.user._id + ".jpg"
              }
-            cb(null, name)
+             else{
+                if(file.mimetype ==='image/png' || file.mimetype ==='image/jpeg' || file.mimetype ==='image/jpg')
+                {
+                    var name=  req.session.passport.user.user._id + '_' +
+                    + Date.now() +Math.floor((Math.random() * 100000) + 1)+ ".png"
+                }              
+             }
+             cb(null, name)
     }
 })
 

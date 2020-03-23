@@ -9,7 +9,7 @@ const cookies = require('cookies')
 const jwt = require('jsonwebtoken');
 const sendEmail = require('../../scripts/sendEmail')
 const auth = require('../../config/auth')
-
+const upload = require('../../scripts/upload') 
 const {registerValidation, loginValidation} = require('../../scripts/validate')
 
 //Creating a new user
@@ -96,28 +96,22 @@ router.post('/login', async (req, res, next) => {
     }    
 })
 
-router.get("/getone/:id", auth, async (req, res) => {
-    User.findOne({_id: req.params.id}).then(result => {
-        delete result.password
-        res.status(200).json({
-            type: "success",
-            message: "User found",
-            user: result
-        })
-        .catch(err => {
-            res.status(400)
-        })
-    })
-})
-
 router.get("/currentuser", async (req, res) => {
     
-    console.log(req.session.passport)
     if(req.isAuthenticated()){
-         res.status(200).send(req.session.passport.user)
-    }
-    else{
-        res.send(403).send("User does not exist")
+        console.log(req.session.passport.user.userGroup)
+        User.findOne({_id: req.session.passport.user.user._id}).then(result => {
+            delete result.password
+            res.status(200).json({
+                type: "success",
+                message: "User found",
+                user: result,
+                userGroup: req.session.passport.user.userGroup
+            })
+        })
+            .catch(err => {
+                res.status(400)
+            })
     }
    
 })
@@ -138,9 +132,9 @@ router.get('/verify', (req, res) => {
 
     if(req.session.passport.user.userGroup === 'user'){
         const email = req.session.passport.user.user.email
-        const hashEmail = jwt.sign({email: req.body.email},'token-secret-key');
+        const hashEmail = jwt.sign({email: email},'token-secret-key');
 
-        const html = '<a href="http://peppershades.com/api/user/setverify/' + hashEmail + '"> Click here to verify email </a>'
+        const html = '<a href="http://localhost:4000/api/user/setverify/' + hashEmail + '"> Click here to verify email </a>'
 
         sendEmail(email, "Verify your email", html, (success, message) => {
             if(success){
@@ -152,7 +146,7 @@ router.get('/verify', (req, res) => {
             else{
                 res.status(403).json({
                     type: "error",
-                    message: "Some error is sending Email"
+                    message: message
                 })
             }
         })
@@ -165,7 +159,7 @@ router.get('/verify', (req, res) => {
 
 router.get('/setverify/:token', async (req, res) => {
        
-    const verified = jwt.verify(req.params.token , 'token-secret-key' );
+    const verified = jwt.verify(req.params.token , 'token-secret-key');
     console.log(verified)
     if(verified){
        User.updateOne({email : verified.email},
@@ -173,7 +167,7 @@ router.get('/setverify/:token', async (req, res) => {
             verified : true
         }}).then(result => {
             console.log("User Verified")
-            res.status(200).redirect('http://peppershades.com/emailverify/')
+            res.status(200).redirect('http://localhost:9000/#/emailverify/')
         }).catch(err => {
             res.status(400).send(err)
         })
@@ -185,17 +179,17 @@ router.get('/setverify/:token', async (req, res) => {
 router.post('/reset', async (req, res) => {
         await User.findOne({email: req.body.email})
         .then(user => {
-            jwt.sign({_id: user._id}, 'secret-token', (err, token) => {
+            jwt.sign({_id: user._id}, 'token-secret-key', (err, token) => {
                 if(err){
                     res.status(500)
                 }
-                console.log(token)
+                const html = '<a href="http://localhost:9000/#/resetpassword/' + token + '"> Click here to reset your password </a>'
                 sendEmail(req.body.email, 
                     "Reset Password", 
-                    token, async (success, message) => {
+                    html, async (success, message) => {
                             if(success){
                                 res.status(200).json({
-                                    type: 'Success',
+                                    type: 'success',
                                     message: 'An Email has been successfully sent to you Mail Id'
                                 })
                             }
@@ -212,11 +206,58 @@ router.post('/reset', async (req, res) => {
 
 router.patch('/password/reset', async (req, res) => {   
 
+    const token = jwt.verify(req.body.token , 'token-secret-key');
+    if(token){
+
+        const salt = await bcrypt.genSalt(10)
+        const hashPassword = await bcrypt.hash(req.body.newPassword, salt)
+
+        User.updateOne({_id : token._id},
+        {$set : {
+            password : hashPassword
+        }}).then(result => {
+            res.status(200).json({
+                type: 'success',
+                message: 'Password changed successfully',
+                data: result
+            })
+        }).catch(err => {
+            res.status(400).send(err)
+        })
+    } 
+    else{
+        res.status(400).redirect("http://localhost:9000")
+    }
     
+
 
 })
 
-    // for updating the e -mail
+//Upload Profile Picture
+router.patch('/upload/profile',auth, upload.single('file'), async (req, res) => {
+    User.updateOne({_id: req.session.passport.user.user._id},
+        {$set: {
+            "profile": req.file.filename
+        }
+    })
+    .then(result => {
+        res.status(200).json({
+            type: 'success',
+            message: "User profile updated successfully.",
+            data: result
+        })
+    })
+    .catch(err => {
+        res.status(400).json({
+            type: 'error',
+            message: err.message
+        })
+    })
+    
+})
+
+
+// for updating the e -mail
 router.patch("/update", async (req, res) => {
 
     const id = req.session.passport.user.user._id

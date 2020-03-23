@@ -23,13 +23,11 @@ module.exports = (to, subject, html, callback) => {
         console.log("Sending....")
         if(typeof callback === "function"){
             if (error) {
-            console.log(error.message)
             callback(false, error.message)
-        }
-        else{
-            console.log("Success")
+            }
+            else{
             callback(true, "Email Sent successfully")
-        }
+            }
     }
     })
     
