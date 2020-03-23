@@ -20,9 +20,13 @@ const freelancerRoutes = require("./api/routes/freelancers");
 const paymentRoutes = require("./api/routes/payments");
 
 // App Middlewares
-app.use('/public', express.static('static'))
+app.use('/api/public', express.static('static'))
 app.use(morgan("dev"));
 app.use(cors());
+
+app.get("/hello", (req, res) => {
+  res.send("Hello")
+})
 
 app.use((req, res, next) => {
   if (req.originalUrl === "/payment/webhook") {
