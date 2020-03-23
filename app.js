@@ -20,7 +20,7 @@ const freelancerRoutes = require("./api/routes/freelancers");
 const paymentRoutes = require("./api/routes/payments");
 
 // App Middlewares
-app.use(express.static('static'))
+app.use('/public', express.static('static'))
 app.use(morgan("dev"));
 app.use(cors());
 
