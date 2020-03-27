@@ -134,9 +134,12 @@ router.get('/verify', (req, res) => {
         const email = req.session.passport.user.user.email
         const hashEmail = jwt.sign({email: email},'token-secret-key');
 
-        const html = '<a href="http://peppershades.com/api/user/setverify/' + hashEmail + '"> Click here to verify email </a>'
+        
 
-        sendEmail(email, "Verify your email", html, (success, message) => {
+        sendEmail(email, "Verify your email", "You can reset your password using this link", req.session.passport.user.user.name, {
+            text: "Reset Password",
+            link: "hetekh"
+        } , (success, message) => {
             if(success){
                 res.status(200).json({
                     type: "success",
