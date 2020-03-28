@@ -61,14 +61,6 @@ router.post('/register', async (req, res) => {
 
 router.post('/login', async (req, res, next) => {   
     
-    if(req.isAuthenticated()){
-        res.status(400).send({
-            "error": true,
-            "message": "You're already logged In",
-            "data":  null
-        })
-    }
-    else {
         passport.authenticate('client', {
         session: true
         }, (err, user) => {
@@ -93,7 +85,7 @@ router.post('/login', async (req, res, next) => {
             
             })
         })(req, res, next) 
-    }    
+     
 })
 
 router.get("/currentuser", async (req, res) => {

@@ -18,7 +18,7 @@ module.exports = (to, subject, body, name, button, callback) => {
         htmlName = `Dear ${name},<br><br>`
     }
     if(button){
-        htmlBtn =  `<a style="padding: 16px 32px;border-radius:12px;font-weight:800;cursor:pointer;background: linear-gradient(74deg, rgba(241,90,41,1) 0%, rgba(215,31,38,1) 100%);color:white;">${button.text}</a>`
+        htmlBtn =  `<a style="padding: 16px 32px;border-radius:12px;font-weight:800;cursor:pointer;background: linear-gradient(74deg, rgba(241,90,41,1) 0%, rgba(215,31,38,1) 100%);color:white;">${button.text}</a><br><br>`
     }
 
     var html = ` <head><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"></head>
@@ -49,7 +49,7 @@ module.exports = (to, subject, body, name, button, callback) => {
                                                                                         <div style="width:100%">
                                                                                             <div style="width: 100%;background: linear-gradient(74deg, rgba(241,90,41,1) 0%, rgba(215,31,38,1) 100%);height: 16px;"></div>
                                                                                             <div id="logo" style="background: white; padding: 128px 64px 64px 64px;">
-                                                                                                <img src="https://peppershades.com/api/public/assets/logo.svg" height="96px">
+                                                                                                <img src="https://scontent.fjai2-1.fna.fbcdn.net/v/t1.15752-9/90675684_206387770619197_1299117131891212288_n.png?_nc_cat=103&_nc_sid=b96e70&_nc_ohc=K1ozlgyPY6sAX-HhsyK&_nc_ht=scontent.fjai2-1.fna&oh=4a23e896956b83122a9a5ebd0b237184&oe=5EA37430" height="96px">
                                                                                             </div>
                                                                                         <div style="min-height: 96px;padding: 48px 64px 64px 64px;background: white;">
                                                                                             ${htmlName}
@@ -58,7 +58,9 @@ module.exports = (to, subject, body, name, button, callback) => {
                                                                                             <br>
                                                                                             <div style="width:100%;margin-top:64px;margin-bottom:48px;text-align:center;">
                                                                                             ${htmlBtn}
+
                                                                                             </div>
+                                                                
                                                                                             
                                                                                         </div>
                                                                                         <div style="font-size:14px;color:rgba(0,0,0,0.5);background-color:white;padding:16px 64px">
