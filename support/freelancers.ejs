@@ -1,0 +1,126 @@
+<html lang="en">
+    <%- include('head'); -%>
+    <body class="sb-nav-fixed sb-sidenav-toggled">
+        <%- include('nav'); -%>
+        <div id="layoutSidenav">
+            <%- include('sidebar'); -%>
+           
+            <div id="layoutSidenav_content" class="bg-light">
+                <main>
+                    <div class="container-fluid ">
+                        <br>
+                        <div class="card mb-4">
+                            <div class="card-header"><i class="fas fa-table mr-1"></i>DataTable Example</div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th>Id</th>
+                                                <th>Name</th>
+                                                <th>Email</th>
+                                                <th>Rating</th>
+                                                <th>Projects</th>
+                                                <th>Wallet</th>
+                                                <th>Experience</th>
+                                                <th>Date Joined</th>
+                                                <th>Ranking</th>
+                                                <th>Type</th>
+                                                <th>Hourly Rate</th>
+                                                <th>Work Rate</th>
+                                                <th>Priority</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% freelancers.forEach(function(freelancer){ %>
+                                                <tr>
+                                                    <% let deleteurl = "/api/support/delete/Freelancer/" + freelancer._id %>
+                                                    <% let emailurl = "/api/support/freelancer/sendemail/" + freelancer._id %>
+                                                    <td><%= freelancer._id %></td>
+                                                    <td><%= freelancer.name %></td>
+                                                    <td><%= freelancer.email %></td>
+                                                    <td><%= freelancer.rating %></td>
+                                                    <td><%= freelancer.totalProjects %></td>
+                                                    <td><%= freelancer.wallet %></td>
+                                                    <td><%= freelancer.workExperience %></td>
+                                                    <td><%= freelancer.dateJoined %></td>
+                                                    <td><%= freelancer.ranking %></td>
+                                                    <td><%= freelancer.type %></td>
+                                                    <td><%= freelancer.hourlyRate %></td>
+                                                    <td><%= freelancer.workRate %></td>
+                                                    <td><%= freelancer.priorityValue %></td>
+                                                    <td><a href="<%= emailurl %>"><i class="fa fa-envelope"></i></a> &nbsp; <a href="<%= deleteurl %>"><i class="fa fa-trash"></i></a></td>
+                                                </tr>
+                                            <% }) %>    
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+                <!-- <footer class="py-4 bg-light mt-auto">
+                    <div class="container-fluid">
+                        <div class="d-flex align-items-center justify-content-between small">
+                            <div class="text-muted">Copyright &copy; Your Website 2019</div>
+                            <div>
+                                <a href="#">Privacy Policy</a>
+                                &middot;
+                                <a href="#">Terms &amp; Conditions</a>
+                            </div>
+                        </div>
+                    </div>
+                </footer> -->
+            </div>
+
+        </div>
+        
+        <%- include('scripts'); -%>
+       
+        <script>
+            var ctx = document.getElementById("myBarChart");
+            var myLineChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ["January", "February", "March", "April", "May", "June"],
+                datasets: [{
+                    label: "Revenue",
+                    backgroundColor: "rgba(2,117,216,1)",
+                    borderColor: "rgba(2,117,216,1)",
+                    data: [4215, 5312, 6251, 7841, 9821, 14984],
+                }],
+            },
+            options: {
+                scales: {
+                xAxes: [{
+                    time: {
+                    unit: 'month'
+                    },
+                    gridLines: {
+                    display: false
+                    },
+                    ticks: {
+                    maxTicksLimit: 6
+                    }
+                }],
+                yAxes: [{
+                    ticks: {
+                    min: 0,
+                    max: 15000,
+                    maxTicksLimit: 5
+                    },
+                    gridLines: {
+                    display: false
+                    }
+                }],
+                },
+                legend: {
+                    display: false
+                }
+            }
+            });
+
+        </script>
+    </body>
+</html>

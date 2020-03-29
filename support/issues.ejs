@@ -1,0 +1,142 @@
+<html lang="en">
+    <%- include('head'); -%>
+    <body class="sb-nav-fixed sb-sidenav-toggled">
+        <%- include('nav'); -%>
+        <div id="layoutSidenav">
+            <%- include('sidebar'); -%>
+           
+            <div id="layoutSidenav_content" class="bg-light">
+                <main>
+                    <div class="container-fluid ">
+                        <br>
+                        <div class="row">
+                            <div class="col-xl-6 col-md-12 mb-4">
+                                <div class="card bg-light text-dark">
+                                    <div class="card-body">
+                                        <h3><%= issues.length %></h3>
+                                        <span class="text-dark" >Total Issues</span> 
+                                    </div>                    
+                                    
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card bg-light text-dark">
+                                    <div class="card-body">
+                                        <% let solved = issues.filter(element => element.status === 'Solved').length %>
+                                        <h3><%= solved %></h3>
+                                        <span class="text-dark" >Solved</span> 
+                                    </div>                    
+                                    
+                                </div>
+                            </div><div class="col-xl-3 col-md-6 mb-4">
+                                <div class="card bg-light text-dark">
+                                    <div class="card-body">
+                                        <h3><%= issues.length - solved %></h3>
+                                        <span class="text-dark" >Unsolved</span> 
+                                    </div>                    
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card mb-4">
+                            <div class="card-header"><i class="fas fa-table mr-1"></i>DataTable Example</div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th>Project Name</th>
+                                                <th>Client Name</th>
+                                                <th>Description</th>
+                                                <th>Contact</th>
+                                                <th>Status</th>
+                                                <th>Send Mail</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% issues.forEach(function(issue){ %>
+                                                <tr>
+                                                    
+                                                    <% let emailurl = "/api/support/sendemail/" + issue.clientId %>
+                                                    <% let changeurl = "/api/support/updateIssue/" + issue._id %>
+                                                    <td><%= issue.projectName %></td>
+                                                    <td><%= issue.clientName %></td>
+                                                    <td><%= issue.description %></td>
+                                                    <td><%= issue.clientContact %></td>
+                                                    <td><%= issue.status %></td>
+                                                    <td><a href="<%= emailurl %>"><i class="fa fa-envelope"></i></a</td>
+                                                    <td><a href="<%= changeurl %>">Toggle Status</i></a</td>    
+                                                </tr>
+                                            <% }) %>    
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+                <!-- <footer class="py-4 bg-light mt-auto">
+                    <div class="container-fluid">
+                        <div class="d-flex align-items-center justify-content-between small">
+                            <div class="text-muted">Copyright &copy; Your Website 2019</div>
+                            <div>
+                                <a href="#">Privacy Policy</a>
+                                &middot;
+                                <a href="#">Terms &amp; Conditions</a>
+                            </div>
+                        </div>
+                    </div>
+                </footer> -->
+            </div>
+
+        </div>
+        
+        <%- include('scripts'); -%>
+       
+        <script>
+            var ctx = document.getElementById("myBarChart");
+            var myLineChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ["January", "February", "March", "April", "May", "June"],
+                datasets: [{
+                    label: "Revenue",
+                    backgroundColor: "rgba(2,117,216,1)",
+                    borderColor: "rgba(2,117,216,1)",
+                    data: [4215, 5312, 6251, 7841, 9821, 14984],
+                }],
+            },
+            options: {
+                scales: {
+                xAxes: [{
+                    time: {
+                    unit: 'month'
+                    },
+                    gridLines: {
+                    display: false
+                    },
+                    ticks: {
+                    maxTicksLimit: 6
+                    }
+                }],
+                yAxes: [{
+                    ticks: {
+                    min: 0,
+                    max: 15000,
+                    maxTicksLimit: 5
+                    },
+                    gridLines: {
+                    display: false
+                    }
+                }],
+                },
+                legend: {
+                    display: false
+                }
+            }
+            });
+
+        </script>
+    </body>
+</html>
