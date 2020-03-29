@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 const passport = require("passport");
 const cors = require("cors");
+const path = require("path");
 const MongoStore = require("connect-mongo")(session);
 const cookieParser = require("cookie-parser");
 
@@ -19,14 +20,17 @@ const userRoutes = require("./api/routes/users");
 const freelancerRoutes = require("./api/routes/freelancers");
 const paymentRoutes = require("./api/routes/payments");
 
+app.set('views', path.join(__dirname, 'support'));
+app.set('view engine', 'ejs');
+
+
 // App Middlewares
 app.use('/api/public', express.static('static'))
+app.use('/api/support', express.static('support'))
 app.use(morgan("dev"));
 app.use(cors());
 
-app.get("/hello", (req, res) => {
-  res.send("Hello")
-})
+
 
 app.use((req, res, next) => {
   if (req.originalUrl === "/payment/webhook") {
@@ -37,6 +41,7 @@ app.use((req, res, next) => {
   }
 });
 
+app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
 
 // Express Session
@@ -64,13 +69,14 @@ app.use("/api/project", projectRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/freelancer", freelancerRoutes);
 app.use("/api/payment", paymentRoutes);
-app.use("/api/mysupport", supportRoutes);
+app.use("/api/support", supportRoutes);
+
 
 // 404 Not Found
 app.use((req, res, next) => {
   const error = new Error("Not Found");
   error.status = 404;
-  next(error);
+  res.redirect("https://www.peppershades.com/#/notfound")
 });
 
 // Errors
