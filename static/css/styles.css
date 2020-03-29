@@ -10034,11 +10034,17 @@ body {
   #layoutSidenav #layoutSidenav_nav {
     transform: translateX(-225px);
   }
+  #myAreaChart2{
+    display: none !important;
+  }
 }
 
 @media (min-width: 992px) {
   #layoutSidenav #layoutSidenav_nav {
     transform: translateX(0px);
+  }
+  #myAreaChart{
+    display: none !important;
   }
   #layoutSidenav #layoutSidenav_content {
     margin-left: 0;
