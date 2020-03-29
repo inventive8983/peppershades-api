@@ -10033,7 +10033,7 @@ body {
 
 @media (min-width: 992px) {
   #layoutSidenav #layoutSidenav_nav {
-    transform: translateX(0);
+    transform: translateX(-225px);
   }
   #layoutSidenav #layoutSidenav_content {
     margin-left: 0;
