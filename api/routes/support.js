@@ -4,14 +4,21 @@ const mongoose = require('mongoose')
 const Freelancer = require('../models/freelancer')
 const Project = require('../models/project')
 const Issues = require('../models/reportissue')
-const auth = require('../../config/auth')
 const User = require('../models/user')
 const token = 'inh#$ygf^&tejd457867bct5we64r//@342?SDGER34fyt5d5t@'
 const sendEmail = require('../../scripts/sendEmail')
+const addfreelancers = require('../../scripts/uploadfreelancers')
+const assign = require('../../scripts/assignfreelancer')
+const auth = require('../../config/auth')
 
+router.get('/logout', (req, res) => {
+    res.clearCookie('user');
+    res.render('login', {type: 'info', message: "Please login to continue"})
+})
 //Render Views
 router.get('/', (req,res)=>
-{
+{   
+    console.log(req.user)
     var freelancers = ''
     Freelancer.find().then(result => {
         freelancers = result.length
@@ -31,11 +38,20 @@ router.get('/', (req,res)=>
             freelancers: freelancers
         }
         console.log(analytics)
-        res.render('index', {projects: result, analytics: analytics})
+        if(req.query.m){
+            var message = {
+                type: req.query.t || info,
+                message: req.query.m
+            }
+        }
+        else{
+            var message = false
+        }
+        res.render('index', {user: req.user, message, projects: result, analytics: analytics})
     })
     .catch(err=>
         {
-
+            console.log(err)
             res.status(400).json({
                 type:"error",
                 message:"there is an error",
@@ -101,7 +117,6 @@ router.get('/projects', (req,res)=>
         servicesCount[8] = services.filter(element => element === 'Billboard').length
         servicesCount[9] = services.filter(element => element === 'Banners').length
 
-        console.log(servicesCount)
         var analytics = {
             projects: result.length,
             working: result.filter(project => project.currentStatus === 'Working').length,
@@ -114,7 +129,16 @@ router.get('/projects', (req,res)=>
             services: servicesCount
         }
         console.log(analytics)
-        res.render('projects', {projects: result, analytics: analytics})
+        if(req.query.m){
+            var message = {
+                type: req.query.t || info,
+                message: req.query.m
+            }
+        }
+        else{
+            var message = false
+        }
+        res.render('projects', {user: req.user, message:  message, projects: result, analytics: analytics})
     })
     .catch(err=>
         {
@@ -136,7 +160,16 @@ router.get('/freelancers', (req, res)=>
  
     Freelancer.find({})
     .then(result=>{
-        res.status(200).render('freelancers', {freelancers: result})
+        if(req.query.m){
+            var message = {
+                type: req.query.t || info,
+                message: req.query.m
+            }
+        }
+        else{
+            var message = false
+        }
+        res.status(200).render('freelancers', {user: req.user, message: message, freelancers: result})
      })
     .catch(err=>
         {
@@ -152,7 +185,16 @@ router.get('/clients', (req, res) => {
 
     User.find({})
     .then(result=>{
-        res.status(200).render('clients', {clients: result})
+        if(req.query.m){
+            var message = {
+                type: req.query.t || info,
+                message: req.query.m
+            }
+        }
+        else{
+            var message = false
+        }
+        res.status(200).render('clients', {user: req.user, message: message, clients: result})
      })
     .catch(err=>
         {
@@ -166,19 +208,33 @@ router.get('/clients', (req, res) => {
 router.get('/addfreelancers', (req, res) => {
 
     Freelancer.find({}).then(result => {
-        res.render('taskviews/addfreelancers', {totalFreelancers: result.length})
+        if(req.query.m){
+            var message = {
+                type: req.query.t || info,
+                message: req.query.m
+            }
+        }
+        else{
+            var message = false
+        }
+        res.render('taskviews/addfreelancers', {message: message,totalFreelancers: result.length})
     }).catch(err => {
         console.log(err)
     })
     
 })
 
-router.get('/assignfreelancer/:projectId', (req, res) => {
+router.get('/assignfreelancer/:projectId', async (req, res) => {
 
-    Project.findOne({_id: req.params.projectId}).then(project => {
+    
+
+    await Project.findOne({_id: req.params.projectId}).then(async project => {
+    
+        let getFreelancers = await assign(project.budget, project.serviceMode, project.services)
         res.render('taskviews/assign', {
             projectId: project._id,
-            projectName: project.name
+            projectName: project.name,
+            freelancers: getFreelancers
         })
     }).catch(err => {
         console.log(err)
@@ -267,8 +323,16 @@ router.get('/issues',(req,res)=>
     Issues.find({})
     .then(result=>
         {   
-            console.log(result)
-            res.status(200).render('issues', {issues: result})
+            if(req.query.m){
+                var message = {
+                    type: req.query.t || info,
+                    message: req.query.m
+                }
+            }
+            else{
+                var message = false
+            }
+            res.status(200).render('issues', {user: req.user, message: message,issues: result})
         })
     .catch(err=>
         {
@@ -279,6 +343,9 @@ router.get('/issues',(req,res)=>
         })
 })
 
+//Add Freelancers 
+
+router.post('/addfreelancers', addfreelancers)
 
 //assign freelancer to a project
 
@@ -294,17 +361,11 @@ router.post('/freelancer/assign/:projectId',(req, res)=> {
                         }
                     })
                     .then(result=>{
-                            res.status(200).json({
-                                type:"success",
-                                message:"Freelancer assigned successfully",
-                                data :result
-                            })
+                            res.status(200).redirect('/api/support/freelancers?m=Freelancer Assigned&t=success')
                     })
                     .catch(err=> {
-                        res.status(400).json({
-                            type:"failure",
-                            data:err
-                        })
+                        res.status(400).redirect('/api/support/freelancers?m=Some Error Occured&t=danger')
+
                     })
     })
 
@@ -334,21 +395,14 @@ router.get('/freelancer/remove/:projectId',(req, res)=>
             })
         .catch(err=>
             {
-                res.send(400).json({
-                    type:"failure",
-                    err:err
-                })
+                res.send(400).redirect('/api/support/projects?m=Some Error Occured&t=danger')
             })
 
     })
     .catch(err=>
         {
-            res.send(400).json({
-                type:"failure",
-                err:err
-            })
+            res.send(400).redirect('/api/support/projects?m=Some Error Occured&t=danger')
         })
-    
 })
 
 
@@ -368,7 +422,7 @@ router.post('/changestatus/:projectId',(req, res) =>
             res.send(err)
         })
 
-        var decline = true
+        decline = true
     }
     else{
         status = req.body.status
@@ -377,82 +431,21 @@ router.post('/changestatus/:projectId',(req, res) =>
     const id = req.params.projectId
     Project.updateOne({_id:id},{$set:{
         currentStatus: status,
-        declineStatus:false
+        declineStatus:decline
         }
     })
     .then(result=>
         {
-            res.status(200).json({
-                type:"success",
-                message:"Project undeclined successfully",
-                data:result
-            })
+            res.status(200).redirect('/api/support/projects?m=Status Updated&t=success')
         })
     .catch(err=>
         {
-            res.status(400).json({
-                type:"failure",
-                err:err
-            })
+            res.status(400).redirect('/api/support/projects?m=Some Error Occured&t=danger')
         })
 })
 
 
-// Get issues submitted by users
 
-router.post('/issues/add', auth, (req,res)=>
-{
-       
-    const clientId = req.session.passport.user
-     
-    User.findOne({_id:clientId})
-    .then(result=>
-        {
-        const clientContact = result.contact
-        const clientName = result.name
-        Project.findOne({_id:req.body.projectId})
-        .then(res =>
-            {
-                const projectName = res.name
-                const issue = new Issues(
-                    {
-                        _id: new mongoose.Types.ObjectId(),
-                        projectId:req.body.projectId,
-                        description: req.body.description,
-                        clientId:clientId,
-                        projectName:projectName,
-                        clientContact:clientContact,
-                        clientName:clientName
-                        })
-                        issue.save().then(result =>
-                        {
-                            console.log(result)
-                        })
-                        .catch(err=>
-                        {
-                            console.log(err)
-                        })
-                    })
-                   .catch(err=>
-                    {
-                        console.log(err)
-                    })
-            res.status(200).json({
-                type:"success",
-                 message:"Issues has been submiited"
-                 
-            })     
- })
-    .catch(err=>
-        {
-          
-         res.status(400).json({
-             type:"failure",
-             data:err
-            })
-        })
-            
-})
 
 
 
@@ -460,33 +453,75 @@ router.get('/updateIssue/:reportId', (req, res) => {
 
     Issues.findOne({_id: req.params.reportId}).then(result => {
 
-        let status = result.status === 'Solved' ? 'Unsloved' : 'Solved'
+        let status = result.status === 'Solved' ? 'Unsolved' : 'Solved'
 
         Issues.updateOne({_id: req.params.reportId}, {
             $set: {
                 "status": status
             }
         }).then(result => {
-            res.status(200).redirect("/api/support/issues")
+            res.status(200).redirect('/api/support/issues?m=Changed Status&t=success')
         })
         .catch(err => {
             console.log(err)
-            res.status(400)
+            res.status(400).redirect('/api/support/issues?m=Some Error Occured&t=danger')
         })
     }).catch(err => {
         console.log(err)
-        res.status(400)
+        res.status(400).redirect('/api/support/issues?m=Some Error Occured&t=danger')
     })
 
     
 })
 
 //Send Email 
-router.post('/sendmail', (req, res) => {
+router.post('/sendmail', async (req, res) => {
 
     const to = req.body.mailId
-    const subject = req.body.subject
     const name = req.body.name
+
+    let mailList = to.split(',')
+    let nameList = name.split(',')
+
+    if(req.body.freelancers === 'on'){
+
+        await Freelancer.find({}).then(result => {
+
+            let mails = result.map(freelancer => freelancer.email)
+            mails.forEach(element => {
+                mailList.push(element)
+            })
+
+            let names = result.map(freelancer => freelancer.name)
+            names.forEach(element => {
+                nameList.push(element)
+            })
+
+        })
+
+    }
+
+    if(req.body.clients === 'on'){
+
+        await User.find({}).then(result => {
+
+            let mails = result.map(user => user.email)
+            mails.forEach(element => {
+                mailList.push(element)
+            })
+
+            let names = result.map(user => user.name)
+            names.forEach(element => {
+                nameList.push(element)
+            })
+
+        })
+
+    }
+
+    console.log(nameList, mailList)
+
+    const subject = req.body.subject
     const body = req.body.body
     const button = {
         text: req.body.btnText,
@@ -495,10 +530,10 @@ router.post('/sendmail', (req, res) => {
 
     sendEmail(to, subject, body, name, button, (success, message) => {
         if(success){
-            res.status(200).send(`Mail sent seccessfuly to ${to}`)
+            res.status(200).redirect(`/api/support/?m=${message}&t=success`)
         }
         else{
-            res.status(400).send(message)
+            res.status(400).redirect('/api/support/?m=Some Error Occured&t=danger')
         }
     })
 
@@ -508,19 +543,33 @@ router.get('/delete/:role/:id', (req, res) => {
 
     var Model = req.params.role
 
-    User.deleteOne({_id: req.params.id}).then(result => {
-        res.status(200).json({
-            type: 'success',
-            message: Model + ' deleted successfully.',
-            data: result
+    switch(Model){
+        case('User'):
+        User.deleteOne({_id: req.params.id}).then(result => {
+            res.status(200).redirect('/api/support/clients?m=Deleted%20Successfully&t=success')
         })
-    })
-    .catch(err => {
-        res.status(200).json({
-            type: 'error',
-            error: err
+        .catch(err => {
+            res.status(400).redirect('/api/support/clients?m=Some Error Occured&t=danger')
         })
-    })
+        break;
+        case('Freelancer'):
+        Freelancer.deleteOne({_id: req.params.id}).then(result => {
+            res.sendStatus(200).redirect('/api/support/freelancers?m=Deleted%20Successfully&t=success')
+        })
+        .catch(err => {
+            res.status(400).redirect('/api/support/freelancers?m=Some Error Occured&t=danger')
+        })
+        break;
+        case('Project'):
+        Project.deleteOne({_id: req.params.id}).then(result => {
+            res.status(200).redirect('/api/support/projects?m=Deleted%20Successfully&t=success')
+        })
+        .catch(err => {
+            res.status(400).redirect('/api/support/projects?m=Some Error Occured&t=danger')
+        })
+        break;
+    }
+    
 
 })
 
@@ -531,9 +580,9 @@ router.post('/budget/:id', (req, res) => {
             budget: req.body.budget
         }
     }).then(result => {
-        res.status(200).send("Updated Budget Successfully")
+        res.status(200).redirect('/api/support/projects?m=Changed Budget Successfully&t=success')
     }).catch(err => {
-        res.status(400).send(err)
+        res.status(400).redirect('/api/support/projects?m=Some Error Occured&t=danger')
     })
 
 })
@@ -547,13 +596,9 @@ router.post('/payment/:id', (req, res) => {
             "pay.totalAmount" : payment
         }
     }).then(result => {
-        res.status(200).json({
-            type: 'success',
-            message: "Updated Amount Successfully",
-            data: result
-        })
+        res.status(200).redirect('/api/support/projects?m=Amount Changed!&t=success')
     }).catch(err => {
-        res.status(400).send(err)
+        res.status(400).redirect('/api/support/projects?m=Some Error Occured&t=danger')
     })
 
 })

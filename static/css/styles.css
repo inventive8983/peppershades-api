@@ -207,6 +207,7 @@ svg {
 
 table {
   border-collapse: collapse;
+  word-wrap: normal !important;
 }
 
 caption {
@@ -10126,9 +10127,6 @@ body {
   height: 100%;
   flex-wrap: nowrap;
 }
-.sb-sidenav .sb-sidenav-menu {
-  flex-grow: 1;
-}
 .sb-sidenav .sb-sidenav-menu .nav {
   flex-direction: column;
   flex-wrap: nowrap;
@@ -10161,8 +10159,8 @@ body {
   margin-left: 1.5rem;
   flex-direction: column;
 }
-.sb-sidenav .sb-sidenav-footer {
-  padding: 0.75rem;
+.sb-sidenav .sb-sidenav-user {
+  padding: 1rem;
   flex-shrink: 0;
 }
 
@@ -10191,9 +10189,6 @@ body {
 .sb-sidenav-dark .sb-sidenav-menu .nav-link.active .sb-nav-link-icon {
   color: #fff;
 }
-.sb-sidenav-dark .sb-sidenav-footer {
-  background-color: #343a40;
-}
 
 .sb-sidenav-light {
   background-color: #f8f9fa;
@@ -10219,7 +10214,4 @@ body {
 }
 .sb-sidenav-light .sb-sidenav-menu .nav-link.active .sb-nav-link-icon {
   color: #d71f26;
-}
-.sb-sidenav-light .sb-sidenav-footer {
-  background-color: #e9ecef;
 }

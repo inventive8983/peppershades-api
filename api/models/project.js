@@ -47,7 +47,14 @@ const projectSchema = mongoose.Schema({
     services: [
         {
             serviceName: String,
-            currentStatus: String,
+            quantity:{
+                type: Number,
+                default: 1
+            },
+            currentStatus:{
+                type: String,
+                default: "Starting Soon"
+            },
             timeStart:
             {
                 type:Date,
@@ -73,6 +80,10 @@ const projectSchema = mongoose.Schema({
             {
                 type:Number,
                 default:0
+            },
+            timeArray: {
+                type: Array,
+                default: [0]
             }
         },
     ], 

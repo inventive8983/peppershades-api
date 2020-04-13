@@ -32,7 +32,7 @@ const reportissueSchema = mongoose.Schema({
         type:String,
         require:true
     },
-    clientContct:
+    clientContact:
     {
         type:Number,
         required:true

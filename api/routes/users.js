@@ -10,7 +10,7 @@ const jwt = require('jsonwebtoken');
 const sendEmail = require('../../scripts/sendEmail')
 const auth = require('../../config/auth')
 const upload = require('../../scripts/upload') 
-const {registerValidation, loginValidation} = require('../../scripts/validate')
+const {registerValidation} = require('../../scripts/validate')
 
 //Creating a new user
 router.post('/register', async (req, res) => {
@@ -65,18 +65,16 @@ router.post('/login', async (req, res, next) => {
         session: true
         }, (err, user) => {
             if(err) return next(err)
+            req.logIn(user, function(err) {
+            console.log(err);
+            if (err) { return next(err) }         
             if (!user) { 
-                return res.send({
+                return res.status(400).send({
                 "error": true,
                 "message": "Log In Failed",
                 "data": null
                 }) 
             }
-            req.logIn(user, function(err) {
-            console.log(err);
-            if (err) { return next(err) }         
-            
-
             res.send({
                 "error": null,
                 "message": "Log In Success",
@@ -90,7 +88,7 @@ router.post('/login', async (req, res, next) => {
 
 router.get("/currentuser", async (req, res) => {
     
-    if(req.isAuthenticated()){
+    if(req.isAuthenticated() && req.session.passport.user.userGroup === 'user'){
         console.log(req.session.passport.user.userGroup)
         User.findOne({_id: req.session.passport.user.user._id}).then(result => {
             delete result.password
@@ -101,7 +99,21 @@ router.get("/currentuser", async (req, res) => {
                 userGroup: req.session.passport.user.userGroup
             })
         })
-            .catch(err => {
+         .catch(err => {
+                res.status(400)
+            })
+    }
+    else if(req.isAuthenticated() && req.session.passport.user.userGroup === 'freelancer'){
+        Freelancer.findOne({_id: req.session.passport.user.user._id}).then(result => {
+            delete result.password
+            res.status(200).json({
+                type: "success",
+                message: "Freelancer found",
+                user: result,
+                userGroup: req.session.passport.user.userGroup
+            })
+        })
+         .catch(err => {
                 res.status(400)
             })
     }
@@ -128,9 +140,9 @@ router.get('/verify', (req, res) => {
 
         
 
-        sendEmail(email, "Verify your email", "You can reset your password using this link", req.session.passport.user.user.name, {
-            text: "Reset Password",
-            link: "hetekh"
+        sendEmail(email, "Verify your email", "You can verify your account using this link", req.session.passport.user.user.name, {
+            text: "Verify Mail",
+            link: `https://peppershades.com/api/user/setverify/${token}`
         } , (success, message) => {
             if(success){
                 res.status(200).json({
@@ -179,9 +191,11 @@ router.post('/reset', async (req, res) => {
                     res.status(500)
                 }
                 const html = '<a href="http://localhost:9000/#/resetpassword/' + token + '"> Click here to reset your password </a>'
-                sendEmail(req.body.email, 
-                    "Reset Password", 
-                    html, async (success, message) => {
+                sendEmail(req.body.email,"You can verify your account using this link", req.session.passport.user.user.name, {
+                    text: "Verify Mail",
+                    link: `https://peppershades.com/api/user/setverify/${token}`
+                    }, 
+                    async (success, message) => {
                             if(success){
                                 res.status(200).json({
                                     type: 'success',

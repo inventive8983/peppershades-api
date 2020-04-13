@@ -16,7 +16,11 @@ const freelancerSchema = mongoose.Schema({
     },
     password: {
         type: String,
-        required: false
+        required: true
+    },
+    username: {
+        type: String,
+        required: true
     },
     contact: {
         type: Number,
@@ -27,11 +31,12 @@ const freelancerSchema = mongoose.Schema({
        // required: true
     //},
     aboutMe: {
-        type: String
+        type: String,
+        default: ''
     },
     skills: {
         type: Array,
-        required: false
+        required: true
     },
     interests: {
         type: Array
@@ -43,46 +48,81 @@ const freelancerSchema = mongoose.Schema({
         { rewardedOn: String },
         { licenseNo: Number }
     ],
-    profiles: [
-        { behance: String },
-        { dribble: String },
-        { instagram: String },
-        { facebook: String },
-        { linkedin: String },
-        { pinterest: String }
-    ],
+    profiles: {
+        type: Array,
+        required: true
+    },
     languages: {
-        type: Array
+        type: Array,
+         required: true
     },
     rating: {
-        type: String,
+        type: Number,
+        default: 0
     },
     totalProjects: {
         type: Number,
+        default: 0
     },
     wallet: {
-        type: Number
+        type: Number,
+        default: 0
     },
     workExperience: {
-        type: Number
+        type: Number,
+        default: 1
     },
     dateJoined: {
-        type: String
+        type: Date,
+        default: Date.now()
     },
     ranking: {
-        type: Number
+        type: Number,
+        default: 0
     },
     type: {
-        type: String
+        type: String,
+        required: true
     },
     hourlyRate: {
-        type: Number
+        type: Number,
+        default: 60
+    },
+    basicDesigns: {
+        type: Number,
+        default: 60
+    },
+    timeConsumingDesigns: {
+        type: Number,
+        default: 150
+    },
+    brainStormingDesigns: {
+        type: Number,
+        default: 300
+    },
+    projectAssigned: {
+        type: Number,
+        required: false
+    },
+    workLoad: {
+        type: Date,
+        required: false
+    },
+    totalEarning:{
+
     },
     workRate: {
-        type: Number
+        type: Number,
+        required: true,
+        default: 0
+    },
+    hrsPerWeek: { 
+        type: Array,
+        default: [0]
     },
     priorityValue: {
-        type: Number
+        type: Number,
+        default: 0
     },
     accepting: {
         type: Boolean,

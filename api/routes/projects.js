@@ -4,6 +4,7 @@ const mongoose = require('mongoose')
 var MongoClient = require('mongodb').MongoClient;
 const Project = require('../models/project')
 const Freelancer = require('../models/freelancer')
+const Issues = require('../models/reportissue')
 const Chat = require('../models/chat')
 const auth = require('../../config/auth')
 const upload = require('../../scripts/upload') 
@@ -83,14 +84,14 @@ router.patch('/status/change/:serviceName/:projectId',(req, res)=>
         })
         .then(result=> {
             const service = result.services.filter(element => element.serviceName === req.params.serviceName)[0]
-            if(service.currentStatus === 'On Hold' || service.currentStatus === 'Starting Soon' || service.currentStatus === 'Disapproved')
+            if(service.currentStatus === 'On hold' || service.currentStatus === 'Starting soon' || service.currentStatus === 'Disapproved')
             {
                status = 'Working'
                startingTime = Date.now() 
             }
             else 
             {
-                status = 'On Hold'
+                status = 'On hold'
                 holdend = Date.now()
             }
             Project.updateOne({_id:req.params.projectId ,"services.serviceName":req.params.serviceName},{
@@ -179,30 +180,9 @@ router.patch('/status/disapprove/:serviceName/:projectId',(req,res)=>
         })
 })
 
-router.get('/all/', (req, res, next) => {
-    
-    Project.find()
-        .exec()
-        .then(projects => {
-            res.status(200).json({
-                message: 'Displaying all projects',
-                count: projects.length,
-                projects: projects.map(project => {
-                    return project
-                })
-            })
-        })
-        .catch(err => {
-            res.status(500).json({
-                error: err
-            })
-        })
-})
-
-router.get('/:userId', (req, res) => {
-    console.log(req.query)
-    if(req.query.group === 'freelancer'){
-        Project.find({freelancerId: req.params.userId, currentStatus: req.query.status})
+router.get('/', (req, res) => {
+   
+        Project.find(req.query)
             .exec()
             .then(projects => {
                 console.log(projects)
@@ -215,23 +195,6 @@ router.get('/:userId', (req, res) => {
             .catch(err => {
                 res.status(400).send(err)
             })
-    }
-    else{
-        Project.find({clientId: req.params.userId, currentStatus: req.query.status})
-            .exec()
-            .then(projects => {
-                    res.status(200).json({
-                    message:'Loaded',
-                    count: projects.length,
-                    projects: projects.map(project => {
-                        return project
-                        })
-                    })                 
-            })
-            .catch(err => {
-                res.status(400).send(err)
-            })
-    }
     
 })
 
@@ -301,8 +264,6 @@ router.post('/create', auth, (req, res, next) => {
         chatRoom: chat._id
     })
     project.save().then(result => {
-        console.log(result)
-
         chat.save().then(result => {
                 console.log(result)
             }).catch(err => {
@@ -402,6 +363,43 @@ router.patch('/rating/:projectId',auth,  async (req, res) => {
     
 })
 
+// Get issues submitted by users
+
+router.post('/issues/add', auth, (req,res)=>
+{   
+
+    const client = req.session.passport.user.user
+
+    Project.findOne({_id: req.body.projectId})
+    .then(project =>
+        {
+            const issue = new Issues(
+                {
+                    _id: new mongoose.Types.ObjectId(),
+                    projectId:req.body.projectId,
+                    description: req.body.description,
+                    clientId:client._id,
+                    projectName:project.name,
+                    clientContact:client.contact,
+                    clientName: client.name
+            })
+            console.log(issue)
+            issue.save().then(result => {
+                console.log(result)
+                res.status(200).json({
+                    type:"success",
+                    message:"Issue has been submiited"
+                })  
+            })
+            .catch(err=> {
+                console.log(err)
+            })
+    })
+    .catch(err => {
+        console.log(err)
+    })   
+            
+})
 
 //review
 router.patch('/review/:projectId', auth,(req , res , next) =>{

@@ -9,6 +9,9 @@ const cors = require("cors");
 const path = require("path");
 const MongoStore = require("connect-mongo")(session);
 const cookieParser = require("cookie-parser");
+const flash = require('connect-flash')
+const supportauth = require('./scripts/supportauth')
+const login = require('./scripts/supportlogin')
 
 // Config Passport
 require("./config/passport")(passport);
@@ -60,16 +63,20 @@ app.use(
   })
 );
 
+app.use(flash())
+
 // Passport Middleware
 app.use(passport.initialize());
 app.use(passport.session());
 
+//for login
+app.post('/api/support/login', login)
 // Route Middlewares
 app.use("/api/project", projectRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/freelancer", freelancerRoutes);
 app.use("/api/payment", paymentRoutes);
-app.use("/api/support", supportRoutes);
+app.use("/api/support", supportauth, supportRoutes);
 
 
 // 404 Not Found

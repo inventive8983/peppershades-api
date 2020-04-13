@@ -6,7 +6,7 @@
 
    $(document).ready(function(){
     $('#dataTable').DataTable();
-    $("body").toggleClass("sb-sidenav-toggled");
+    // $("body").toggleClass("sb-sidenav-toggled");
     });
 
     (function($) {

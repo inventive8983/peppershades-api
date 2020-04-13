@@ -6,14 +6,15 @@
             <%- include('sidebar'); -%>
            
             <div id="layoutSidenav_content" class="bg-light">
+               
                 <main>
                     <div class="container-fluid ">
-                        <br>
+                        <%- include('error'); -%>
                         <div class="card mb-4">
                             <div class="card-header"><i class="fas fa-table mr-1"></i>DataTable Example</div>
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <table class="table text-nowrap" id="dataTable" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
                                                 <th>Id</th>
@@ -22,6 +23,9 @@
                                                 <th>Rating</th>
                                                 <th>Projects</th>
                                                 <th>Wallet</th>
+                                                <th>Project Assigned</th>
+                                                <th>Work Load</th>
+                                                <th>Profiles</th>
                                                 <th>Experience</th>
                                                 <th>Date Joined</th>
                                                 <th>Ranking</th>
@@ -29,12 +33,15 @@
                                                 <th>Hourly Rate</th>
                                                 <th>Work Rate</th>
                                                 <th>Priority</th>
+                                                <th>Accepting</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <% freelancers.forEach(function(freelancer){ %>
                                                 <tr>
+                                                    <% let workLoad = freelancer.workLoad === null ? 'No Work Load' : freelancer.workLoad %>
+                                                    <% let accepting = freelancer.accepting === true ? 'Yes' : 'No' %>
                                                     <% let deleteurl = "/api/support/delete/Freelancer/" + freelancer._id %>
                                                     <% let emailurl = "/api/support/freelancer/sendemail/" + freelancer._id %>
                                                     <td><%= freelancer._id %></td>
@@ -43,6 +50,13 @@
                                                     <td><%= freelancer.rating %></td>
                                                     <td><%= freelancer.totalProjects %></td>
                                                     <td><%= freelancer.wallet %></td>
+                                                    <td><%= freelancer.projectAssigned %></td>
+                                                    <td><%= workLoad %></td>
+                                                    <td>
+                                                        <% freelancer.profiles.forEach(function(link){ %>
+                                                            <a href="<%= link %>"><%= link %></a>
+                                                        <% }) %>
+                                                    </td>
                                                     <td><%= freelancer.workExperience %></td>
                                                     <td><%= freelancer.dateJoined %></td>
                                                     <td><%= freelancer.ranking %></td>
@@ -50,6 +64,7 @@
                                                     <td><%= freelancer.hourlyRate %></td>
                                                     <td><%= freelancer.workRate %></td>
                                                     <td><%= freelancer.priorityValue %></td>
+                                                    <td><%= accepting %></td>
                                                     <td><a href="<%= emailurl %>"><i class="fa fa-envelope"></i></a> &nbsp; <a href="<%= deleteurl %>"><i class="fa fa-trash"></i></a></td>
                                                 </tr>
                                             <% }) %>    

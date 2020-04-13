@@ -14,9 +14,9 @@
         <div id="layoutAuthentication">
             <div id="layoutAuthentication_content">
                 <main>
-                    <div class="container">
+                    <div class="p-4">
                         <div class="row justify-content-center">
-                            <div class="col-lg-7">
+                            <div class="col-lg-12">
                                 <div class="card shadow-lg border-0 rounded-lg mt-5">
                                     <div class="card-header bg-primary"><h3 class="text-center font-weight-heavy text-white my-4">Assign Freelancer</h3></div>
                                     <div class="card-body">
@@ -31,7 +31,72 @@
                                                     <div class="form-group"><label class="small mb-1">Project Name</label><h2 style="opacity: 50%;"><%= projectName %></h2></div>
                                                 </div>
                                             </div>
+                                     
                                             
+                                                    <div class="table-responsive mt-4 mb-4">
+                                                        <table class="table text-nowrap" id="dataTable" width="100%" cellspacing="0">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Id</th>
+                                                                    <th>Name</th>
+                                                                    <th>Budget</th>
+                                                                    <th>Email</th>
+                                                                    <th>Rating</th>
+                                                                    <th>Projects</th>
+                                                                    <th>Wallet</th>
+                                                                    <th>Project Assigned</th>
+                                                                    <th>Work Load</th>
+                                                                    <th>Profiles</th>
+                                                                    <th>Experience</th>
+                                                                    <th>Date Joined</th>
+                                                                    <th>Ranking</th>
+                                                                    <th>Type</th>
+                                                                    <th>Hourly Rate</th>
+                                                                    <th>Work Rate</th>
+                                                                    <th>Priority</th>
+                                                                    <th>Accepting</th>
+                                                                    <th>Action</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <% freelancers.forEach(function(freelancer){ %>
+                                                                    <tr>
+                                                                        <% let workLoad = freelancer.workLoad === null ? 'No Work Load' : freelancer.workLoad %>
+                                                                        <% let accepting = freelancer.accepting === true ? 'Yes' : 'No' %>
+                                                                        <% let emailurl = "/api/support/freelancer/sendemail/" + freelancer._id %>
+                                                                        <td><%= freelancer._id %></td>
+                                                                        <td><%= freelancer.name %></td>
+                                                                        <td><%= freelancer.budget %></td>
+                                                                        <td><%= freelancer.email %></td>
+                                                                        <td><%= freelancer.rating %></td>
+                                                                        <td><%= freelancer.totalProjects %></td>
+                                                                        <td><%= freelancer.wallet %></td>
+                                                                        <td><%= freelancer.projectAssigned %></td>
+                                                                        <td><%= workLoad %></td>
+                                                                        <td>
+                                                                            <% freelancer.profiles.forEach(function(link){ %>
+                                                                                <a href="<%= link %>"><%= link %></a>
+                                                                            <% }) %>
+                                                                        </td>
+                                                                        <td><%= freelancer.workExperience %></td>
+                                                                        <td><%= freelancer.dateJoined %></td>
+                                                                        <td><%= freelancer.ranking %></td>
+                                                                        <td><%= freelancer.type %></td>
+                                                                        <td><%= freelancer.hourlyRate %></td>
+                                                                        <td><%= freelancer.workRate %></td>
+                                                                        <td><%= freelancer.priorityValue %></td>
+                                                                        <td><%= accepting %></td>
+                                                                        <td><a href="<%= emailurl %>"><i class="fa fa-envelope"></i></a></td>
+                                                                    </tr>
+                                                                <% }) %>    
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                              
+
+                                            <div class="form-row mt-4">
+                                                <h5>or Assign Directly without sending mail</h5>
+                                            </div>    
                                             <div class="form-row">
                                                 <div class="col-md-6">
                                                     <div class="form-group"><label class="small mb-1" for="inputPassword">Freelancer ID</label><input class="form-control py-4" id="id" name="id" type="text" placeholder="Enter Id here" /></div>
@@ -69,6 +134,8 @@
         </div>
         <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
         <script src="/api/public/js/scripts.js"></script>
     </body>
 </html>

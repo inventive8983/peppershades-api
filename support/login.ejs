@@ -10,34 +10,33 @@
         <link href="/api/public/css/styles.css" rel="stylesheet" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js" crossorigin="anonymous"></script>
     </head>
-    <body class="bg-white">
+    <body class="bg-primary">
         <div id="layoutAuthentication">
             <div id="layoutAuthentication_content">
                 <main>
                     <div class="container">
                         <div class="row justify-content-center">
-                            <div class="col-lg-7">
+                            <div class="col-lg-5">
                                 <div class="card shadow-lg border-0 rounded-lg mt-5">
-                                    <div class="card-header bg-primary"><h3 class="text-center font-weight-heavy text-white my-4">Add Freelancers</h3></div>
+                                    <div class="card-header"><h3 class="text-center font-weight-light my-4">Login</h3></div>
                                     <div class="card-body">
-                                        <%- include('error') -%>
-                                        <form action="/api/support/addfreelancers" method="POST" enctype="multipart/form-data">
-                                            <div class="form-row">
-                                                <div class="col-md-12">
-                                                    <div class="form-group"><label class="small mb-1">Total Registered Freelancers</label><h2 style="opacity: 50%;"><%= totalFreelancers %></h2></div>
-                                                </div>
-                                            </div>
+                                        <form action="/api/support/login" method="POST">
                                             
-                                            <div class="form-row">
-                                                <div class="col-md-12">
-                                                    <div class="form-group"><label class="small mb-2" >Upload File Here</label><br><input id="freelancers" name="freelancers" type="file" placeholder="Enter amount here" /></div>
-                                                </div>
-                                            </div>
-                                            <div class="form-group mt-4 mb-0 row justify-content-center mb-4"><button class="btn btn-primary" type="submit">&nbsp;&nbsp;&nbsp;Add&nbsp;&nbsp;&nbsp;</button> &nbsp;&nbsp;&nbsp; <a class="btn font-weight-bold" href="/api/support/projects">Cancel</a></div>
+                                            <div class="alert alert-<%= type %>">
+                                                <%= message %>
+                                              </div>
+                                            <div class="form-group"><input class="form-control py-4" id="inputUsername" type="text" name="username" placeholder="Username" /></div>
+                                            <div class="form-group"><input class="form-control py-4" id="inputPassword" type="password" name="password" placeholder="Password" /></div>
+                                            <!-- <div class="form-group">
+                                                <div class="custom-control custom-checkbox"><input class="custom-control-input" id="rememberPasswordCheck" type="checkbox" /><label class="custom-control-label" for="rememberPasswordCheck">Remember password</label></div>
+                                            </div> -->
+                                            <div class="form-group d-flex align-items-center justify-content-center mt-4 mb-0">
+                                                 <!-- <a class="small" href="password.html">Forgot Password?</a> -->
+                                                <button class="btn btn-primary btn-block" type="submit">Login</button></div> 
                                         </form>
                                     </div>
                                     <!-- <div class="card-footer text-center">
-                                        <div class="small"><a href="register.html">Have an account? Go to login</a></div>
+                                        <div class="small"><a href="register.html">Need an account? Sign up!</a></div>
                                     </div> -->
                                 </div>
                             </div>
