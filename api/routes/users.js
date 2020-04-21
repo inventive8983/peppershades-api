@@ -136,7 +136,7 @@ router.get('/verify', (req, res) => {
 
     if(req.session.passport.user.userGroup === 'user'){
         const email = req.session.passport.user.user.email
-        const hashEmail = jwt.sign({email: email},'token-secret-key');
+        const token = jwt.sign({email: email},'token-secret-key');
 
         
 
@@ -190,12 +190,11 @@ router.post('/reset', async (req, res) => {
                 if(err){
                     res.status(500)
                 }
-                const html = '<a href="http://localhost:9000/#/resetpassword/' + token + '"> Click here to reset your password </a>'
-                sendEmail(req.body.email,"You can verify your account using this link", req.session.passport.user.user.name, {
-                    text: "Verify Mail",
-                    link: `https://peppershades.com/api/user/setverify/${token}`
-                    }, 
-                    async (success, message) => {
+                const name = (user.name).split(" ")[0];
+                sendEmail(req.body.email,"Reset Password Link" ,"You can reset your account password using this link", name, {
+                    text: "Reset Password",
+                    link: `https://peppershades.com/#/resetpassword/${token}`}, 
+                    async (success) => {
                             if(success){
                                 res.status(200).json({
                                     type: 'success',
@@ -235,7 +234,7 @@ router.patch('/password/reset', async (req, res) => {
         })
     } 
     else{
-        res.status(400).redirect("http://localhost:9000")
+        res.status(400).redirect("https://peppershades.com")
     }
     
 
