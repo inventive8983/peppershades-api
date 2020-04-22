@@ -27,12 +27,12 @@ router.post('/login', async (req, res, next) => {
     
         passport.authenticate('freelancer', {
         session: true
-        }, (err, user) => {
+        }, (err, user,info) => {
             if(err) return next(err)
             if (!user) { 
                 return res.status(400).send({
                 "error": true,
-                "message": "Log In Failed",
+                "message": info.message,
                 "data": null
                 }) 
             }
@@ -44,7 +44,7 @@ router.post('/login', async (req, res, next) => {
             }         
             res.send({
                 "error": null,
-                "message": "Log In Success",
+                "message": "Log In Successful",
                 "data":  req.session.passport
                 })
             
