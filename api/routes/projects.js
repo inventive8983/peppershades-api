@@ -149,7 +149,7 @@ router.patch('/status/approve/:serviceName/:projectId',(req,res)=>
         {
             res.status(200).json({
                 type:"Success",
-                message:"Project Completed Successfully",
+                message:"Work completed successfully",
                 data: rest
             })
         })
