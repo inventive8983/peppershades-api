@@ -38,7 +38,7 @@ const str = multer.diskStorage(
                 var name = req.session.passport.user.user._id + ".jpg"
              }
              else{
-                if(file.mimetype ==='image/png' || file.mimetype ==='image/jpeg' || file.mimetype ==='image/jpg')
+                if(file.mimetype ==='image/png' || file.mimetype ==='image/jpeg' || file.mimetype ==='image/jpg'  ||  file.mimetype==='application/pdf')
                 {
                     var name=  req.session.passport.user.user._id + '_' +
                     + Date.now() +Math.floor((Math.random() * 100000) + 1)+ ".png"
