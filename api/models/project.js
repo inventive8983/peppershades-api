@@ -71,10 +71,7 @@ const projectSchema = mongoose.Schema({
                 path: String,
                 createdAt:Date, 
                 message: String,
-                type:{
-                    type: String,
-                    default: 'Image'
-                }
+                fileType:String,//decide the type of the file
             }],
             timeElapsed:
             {
