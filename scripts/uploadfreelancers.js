@@ -2,7 +2,8 @@ var formidable = require('formidable');
 var fs = require('fs');
 const bcrypt = require('bcryptjs')
 const sendEmail = require('../scripts/sendEmail')
-
+const Freelancer = require('../api/models/freelancer')
+const mongoose = require('mongoose')
 
 function tsvtojson(data){
 

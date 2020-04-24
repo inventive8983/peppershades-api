@@ -7,12 +7,12 @@ const mailTemplate = require('../scripts/template')
 
 
 let transporter = nodemailer.createTransport({
-    // service: 'gmail',
-     host: 'smtp.zoho.in',
-     port: 465,
-    secure: true,
+    service: 'gmail',
+    //  host: 'smtp.zoho.in',
+    //  port: 465,
+    // secure: true,
     auth: {
-        user: 'media@peppershades.com',
+        user: 'media.peppershades@gmail.com',
         pass: 'media.peppershades2020'
     }
 });

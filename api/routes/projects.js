@@ -38,7 +38,6 @@ router.patch('/upload/:serviceName/:projectId', upload.single('file'), (req,res)
                 h=60
                 
             }
-            console.log(freelancer.hourlyRate)
             Project.updateOne({_id:req.params.projectId , "services.serviceName":req.params.serviceName},     
             { $push:{ "services.$.files":{
                 path: req.file.filename,
@@ -185,7 +184,6 @@ router.get('/', (req, res) => {
         Project.find(req.query)
             .exec()
             .then(projects => {
-                console.log(projects)
                     res.status(200).json({
                     message:'Loaded',
                     count: projects.length,

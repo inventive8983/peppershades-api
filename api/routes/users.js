@@ -66,7 +66,6 @@ router.post('/login', async (req, res, next) => {
         }, (err, user,info) => {
             if(err) return next(err)
             req.logIn(user, function(err) {
-            console.log(err);
             if (err) { return next(err) }         
             if (!user) { 
                 return res.status(400).send({
@@ -89,7 +88,6 @@ router.post('/login', async (req, res, next) => {
 router.get("/currentuser", async (req, res) => {
     
     if(req.isAuthenticated() && req.session.passport.user.userGroup === 'user'){
-        console.log(req.session.passport.user.userGroup)
         User.findOne({_id: req.session.passport.user.user._id}).then(result => {
             delete result.password
             res.status(200).json({
@@ -174,7 +172,7 @@ router.get('/setverify/:token', async (req, res) => {
             verified : true
         }}).then(result => {
             console.log("User Verified")
-            res.status(200).redirect('http://localhost:9000/#/emailverify/')
+            res.status(200).redirect('https://peppershades.com/#/emailverify/')
         }).catch(err => {
             res.status(400).send(err)
         })
@@ -265,40 +263,50 @@ router.patch('/upload/profile',auth, upload.single('file'), async (req, res) => 
 })
 
 
-// for updating the e -mail
-router.patch("/update", async (req, res) => {
 
+router.patch("/update", auth, async (req, res) => {
+
+    if(req.body.name === '' || req.body.email === '' || req.body.contact === '' || req.body.company === '' || req.body.jobTitle === ''){
+        return res.status(400).json({
+            type: 'error',
+            message: "No field should be empty"
+        })
+    }
+
+    // for updating the e -mail
     const id = req.session.passport.user.user._id
     let updated = 0
 
     if(req.body.check.email)
     {
-        val = req.body.check.email
-        if(User.find({email:val}))
-        {
-            res.send("E-mail already exist")
-
+        var result = await User.find({email:req.body.email})
+            if(result.length != 0 && result[0].email != req.session.passport.user.user.email){
+                return res.status(400).json({
+                    type: 'error',
+                    message: "E-mail already exist"
+                })
+            }
+            else{
+                User.updateOne({_id:id},{$set:{
+                    "email":req.body.email,
+                    "verified": false
+                    }
+                })    
+                .then(result=>
+                {
+                    updated = updated +1
+                })
+                .catch(err=>{
+                   res.status(400).json({
+                       message:err
+                   })
+                })
+            }
         }
-        else{
-        User.updateOne({_id:id},{$set:{"email":req.body.email}})    
-        .then(result=>
-        {
-            updated =updated +1
-        })
-        .catch(err=>{
-           res.status(400).json({
-               message:err
-           })
-        })
-    }
-    }
 
-    console.log(req.body.check)
-    //for updating the contact , company , jobtitle
     if(req.body.check.contact === true){
         User.updateOne({_id: id}, {$set: { contact: req.body.contact}})
         .then(result => {
-            console.log(result)
             updated =updated +1
         })
         .catch(err => {
@@ -310,7 +318,6 @@ router.patch("/update", async (req, res) => {
     if(req.body.check.company === true){
         User.updateOne({_id: id}, {$set: { company: req.body.company}})
         .then(result => {
-            console.log(result)
             updated =updated +1
         })
         .catch(err => {
@@ -322,7 +329,6 @@ router.patch("/update", async (req, res) => {
     if(req.body.check.jobTitle === true){
         User.updateOne({_id: id}, {$set: { "jobTitle": req.body.jobTitle}})
         .then(result => {
-            console.log(result)
             updated =updated +1
         })
         .catch(err => {

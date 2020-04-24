@@ -554,7 +554,7 @@ router.get('/delete/:role/:id', (req, res) => {
         break;
         case('Freelancer'):
         Freelancer.deleteOne({_id: req.params.id}).then(result => {
-            res.sendStatus(200).redirect('/api/support/freelancers?m=Deleted%20Successfully&t=success')
+            res.status(200).redirect('/api/support/freelancers?m=Deleted%20Successfully&t=success')
         })
         .catch(err => {
             res.status(400).redirect('/api/support/freelancers?m=Some Error Occured&t=danger')

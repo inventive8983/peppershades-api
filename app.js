@@ -12,6 +12,7 @@ const cookieParser = require("cookie-parser");
 const flash = require('connect-flash')
 const supportauth = require('./scripts/supportauth')
 const login = require('./scripts/supportlogin')
+const {updates} = require('./scripts/updatefreelancers')
 
 // Config Passport
 require("./config/passport")(passport);
@@ -96,10 +97,17 @@ app.use((error, req, res, next) => {
   });
 });
 
-// for local database
-// mongoose.connect('mongodb://localhost:27017/database', {useNewUrlParser: true, useUnifiedTopology: true },()=>{
-//   console.log("local database has been connected")
-// });
+
+const updateDetails = () => {
+  setInterval(() => {
+    let d = new Date
+    let hour = d.getHours()
+    if(hour === 0){
+      updates();
+    }
+  }, 3600000)
+  console.log('Freelancers details will be updated between 12AM - 1AM everyday')
+}
 
 // Database Connection
 const connectDB = async () => {
@@ -123,5 +131,6 @@ const connectDB = async () => {
 };
 
 connectDB();
+updateDetails();
 
 module.exports = app;

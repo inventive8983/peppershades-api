@@ -89,7 +89,8 @@ const projectSchema = mongoose.Schema({
     ], 
     serviceMode: {
         type: String,
-        required: true
+        required: true,
+        default: 'Green'
     },
     links: [{
         name: String,

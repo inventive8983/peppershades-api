@@ -54,7 +54,7 @@ const connectDB = async () => {
  
 
 
-async function everyweekUpdates(){
+const everyweekUpdates = async () => {
     await Freelancer.find({}).then(result => {
         //For Every Freelancer
         result.forEach(freelancer => {
@@ -111,5 +111,5 @@ async function everyweekUpdates(){
 
 }
 
-connectDB();
-everyweekUpdates()
+// connectDB();
+module.exports.updates = everyweekUpdates

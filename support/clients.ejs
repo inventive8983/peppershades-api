@@ -22,6 +22,7 @@
                                                 <th>Contact</th>
                                                 <th>Job Tile</th>
                                                 <th>Company</th>
+                                                <th>Verified</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -36,6 +37,7 @@
                                                     <td><%= client.contact %></td>
                                                     <td><%= client.jobTitle %></td>
                                                     <td><%= client.company %></td>
+                                                    <td><%= client.verified %></td>
                                                     <td><a href="<%= emailurl %>"><i class="fa fa-envelope"></i></a> &nbsp; <a href="<%= deleteurl %>"><i class="fa fa-trash"></i></a></td>
                                                 </tr>
                                             <% }) %>    
