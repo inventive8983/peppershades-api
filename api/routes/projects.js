@@ -42,7 +42,8 @@ router.patch('/upload/:serviceName/:projectId', upload.single('file'), (req,res)
             { $push:{ "services.$.files":{
                 path: req.file.filename,
                 createdAt: Date.now(),
-                message: req.query.message
+                message: req.query.message,
+                fileType: req.file.mimetype//adding the fileType accroding to coming file
             }},
                 $inc: {
                     "services.$.timeElapsed":parseInt(h),
