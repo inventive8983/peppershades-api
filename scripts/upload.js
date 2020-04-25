@@ -38,11 +38,15 @@ const str = multer.diskStorage(
                 var name = req.session.passport.user.user._id + ".jpg"
              }
              else{
-                if(file.mimetype ==='image/png' || file.mimetype ==='image/jpeg' || file.mimetype ==='image/jpg'  ||  file.mimetype==='application/pdf')
+                if(file.mimetype ==='image/png' || file.mimetype ==='image/jpeg' || file.mimetype ==='image/jpg')
                 {
                     var name=  req.session.passport.user.user._id + '_' +
-                    + Date.now() +Math.floor((Math.random() * 100000) + 1)+ ".png"
-                }              
+                    + Date.now() +Math.floor((Math.random() * 100000) + 1) + '.png'
+                }  
+                else if( file.mimetype==='application/pdf'){
+                  var name=  req.session.passport.user.user._id + '_' +
+                  + Date.now() +Math.floor((Math.random() * 100000) + 1) + '.pdf'
+                }            
              }
              cb(null, name)
     }
@@ -51,7 +55,7 @@ const str = multer.diskStorage(
 //type filtering of image
 const filter = (req,file,cb) =>
 {
-    if(file.mimetype==='image/jpeg' || file.mimetype ==='image/png')
+    if(file.mimetype==='image/jpeg' || file.mimetype ==='image/png' || file.mimetype ==='image/jpg'  ||  file.mimetype==='application/pdf')
     cb(null, true)
 
     else

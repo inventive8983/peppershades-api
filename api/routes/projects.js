@@ -38,6 +38,12 @@ router.patch('/upload/:serviceName/:projectId', upload.single('file'), (req,res)
                 h=60
                 
             }
+            if(req.file.mimetype === 'application/pdf'){
+                req.file.mimetype = 'Document'
+            }
+            else{
+                req.file.mimetype = 'Image'
+            }
             Project.updateOne({_id:req.params.projectId , "services.serviceName":req.params.serviceName},     
             { $push:{ "services.$.files":{
                 path: req.file.filename,
