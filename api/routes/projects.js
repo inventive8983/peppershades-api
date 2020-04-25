@@ -18,7 +18,7 @@ router.patch('/upload/:serviceName/:projectId', upload.single('file'), (req,res)
         Freelancer.findOne({_id: result.freelancerId}).then(freelancer => {
             var h
             const service = result.services.filter(element => element.serviceName === req.params.serviceName)[0]
-            if(service.timeStart!==null)
+            if(service.timeStart !== null)
             { 
                 var y = Date.now()
                 var x= service.timeStart
@@ -30,26 +30,21 @@ router.patch('/upload/:serviceName/:projectId', upload.single('file'), (req,res)
             }
             else
             {
+                console.log(service.files[service.files.length - 1])
                 var x = service.files[service.files.length - 1].createdAt
                 var y = Date.now()
                 h = y - x
-                h= h/(1000 * 60 )
+                h = h/(1000 * 60 )
                 if(h>60)
-                h=60
+                h = 60
                 
-            }
-            if(req.file.mimetype === 'application/pdf'){
-                req.file.mimetype = 'Document'
-            }
-            else{
-                req.file.mimetype = 'Image'
             }
             Project.updateOne({_id:req.params.projectId , "services.serviceName":req.params.serviceName},     
             { $push:{ "services.$.files":{
                 path: req.file.filename,
                 createdAt: Date.now(),
                 message: req.query.message,
-                fileType: req.file.mimetype//adding the fileType accroding to coming file
+                fileType: req.file.mimetype === 'application/pdf' ? 'Document' : 'Image'
             }},
                 $inc: {
                     "services.$.timeElapsed":parseInt(h),
