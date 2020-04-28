@@ -8,6 +8,7 @@ const upload = require('../../scripts/upload')
 
 
 module.exports = (socket, io) => {
+    
     socket.on('change-status', (data) => {
         var status = ''
         var startingTime=null , holdend=null
@@ -32,7 +33,7 @@ module.exports = (socket, io) => {
             })
             .then(rest=>
             {
-                  io.sockets.in(data.projectId).emit('status-change', {
+                  io.to(data.projectId).emit('status-change', {
                       type: 'statusChange',
                       message: 'Status changed to ' + status,
                       status: status
@@ -55,7 +56,7 @@ module.exports = (socket, io) => {
         })
         .then(rest=>
             {   
-                io.sockets.in(data.projectId).emit('status-change', {
+                io.to(data.projectId).emit('status-change', {
                     type: 'change',
                     message: 'Status changed to ' + data.status,
                     status: data.status
@@ -69,7 +70,7 @@ module.exports = (socket, io) => {
     })
     socket.on('file-uploaded', (data) => {
         Project.findOne({_id: data.projectId}).then(project => {
-            io.sockets.in(data.projectId).emit('file-upload', {
+            io.to(data.projectId).emit('file-upload', {
                 type: 'file-upload',
                 message: 'File Uploaded successfully',
                 project: project
@@ -90,7 +91,7 @@ module.exports = (socket, io) => {
             }).then(result => {
                 // console.log(result)
                 Chat.findOne({_id: data.chatRoom}).then(messages => {
-                    io.sockets.in(data.projectId).emit('fetchMessages', messages)
+                    io.to(data.projectId).emit('fetchMessages', messages)
                 })
                 .catch(err => {
                     console.log(err)
@@ -102,7 +103,7 @@ module.exports = (socket, io) => {
     })
     socket.on('getMessages', (data) => {
         Chat.findOne({_id: data.chatRoom}).then(messages => {
-            io.sockets.in(data.projectId).emit('fetchMessages', messages)
+            io.to(data.projectId).emit('fetchMessages', messages)
         })
         .catch(err => {
             console.log(err)

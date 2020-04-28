@@ -6,8 +6,9 @@ const socketio = require('socket.io');
 
 const server = http.createServer(app);
 const io = socketio(server);
+const myIo = io.of('/api')
 
-io.on('connection', function (socket) {
+myIo.on('connection', function (socket) {
   console.log('Connected')
     socket.on('join-room', (data) => {
       socket.join(data.id);
@@ -15,8 +16,7 @@ io.on('connection', function (socket) {
         message: data.userType + ' is online.'
       })
     })
-   
-   projectio(socket, io)
+   projectio(socket, myIo)
  });
 
 server.listen(port, function() {
