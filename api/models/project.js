@@ -55,16 +55,6 @@ const projectSchema = mongoose.Schema({
                 type: String,
                 default: "Starting Soon"
             },
-            timeStart:
-            {
-                type:Date,
-                default:null
-            },            
-            holdTime:
-            {
-                type:Date,
-                default:null
-            },
             finalFile: String,
             files:[
             {
@@ -72,18 +62,22 @@ const projectSchema = mongoose.Schema({
                 createdAt:Date, 
                 message: String,
                 fileType:String,//decide the type of the file
-            }],
-            timeElapsed:
-            {
-                type:Number,
-                default:0
-            },
-            timeArray: {
-                type: Array,
-                default: [0]
-            }
+            }]
         },
-    ], 
+    ],
+    timeElapsed:
+    {
+        type:Number,
+        default:0
+    },
+    timeStart:{
+        type:Date,
+        default:null
+    },            
+    holdTime:{
+        type:Date,
+        default:null
+    }, 
     serviceMode: {
         type: String,
         required: true,

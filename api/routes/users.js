@@ -114,6 +114,11 @@ router.get("/currentuser", async (req, res) => {
          .catch(err => {
                 res.status(400)
             })
+    }else{
+        res.status(200).send({
+            type: "error",
+            message: "User not found"
+        })
     }
    
 })

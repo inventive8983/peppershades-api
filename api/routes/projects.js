@@ -16,28 +16,11 @@ router.patch('/upload/:serviceName/:projectId', upload.single('file'), (req,res)
    .then(result=>
     {
         Freelancer.findOne({_id: result.freelancerId}).then(freelancer => {
-            var h
-            const service = result.services.filter(element => element.serviceName === req.params.serviceName)[0]
-            if(service.timeStart !== null)
-            { 
-                var y = Date.now()
-                var x= service.timeStart
-                h =  y-x
-                h= h/(1000 * 60 )
-                if(h>60)
-                h=60
-                
-            }
-            else
-            {
-                console.log(service.files[service.files.length - 1])
-                var x = service.files[service.files.length - 1].createdAt
-                var y = Date.now()
-                h = y - x
-                h = h/(1000 * 60 )
-                if(h>60)
+    
+            var h = Date.now() - result.timeStart
+            h = h/(1000 * 60 )
+            if(h > 60){
                 h = 60
-                
             }
             Project.updateOne({_id:req.params.projectId , "services.serviceName":req.params.serviceName},     
             { $push:{ "services.$.files":{
@@ -47,17 +30,19 @@ router.patch('/upload/:serviceName/:projectId', upload.single('file'), (req,res)
                 fileType: req.file.mimetype === 'application/pdf' ? 'Document' : 'Image'
             }},
                 $inc: {
-                    "services.$.timeElapsed":parseInt(h),
-                    "pay.totalAmount" : freelancer.hourlyRate * (parseInt(h/60))
+                    "timeElapsed":parseInt(h),
+                    "pay.totalAmount" : freelancer.hourlyRate * (parseInt(h/60) * (result.serviceMode != 'Green'))
                     },
-                $set:{ "services.$.timeStart":null }
+                $set:{ "timeStart": Date.now()}
             })
-                .then(result=>
+                .then(result1 =>
                 {
+                        console.log(freelancer.hourlyRate * (parseInt(h/60) * (result.serviceMode != 'Green')))
+                        console.log(h, result.serviceMode != 'Green')
                         res.status(200).json({
                             type:"Success",
                             message:"Image uploaded Successfuly",
-                            data:result
+                            data:result1
                         })
                 })
                 .catch(err=>
@@ -181,7 +166,7 @@ router.patch('/status/disapprove/:serviceName/:projectId',(req,res)=>
         })
 })
 
-router.get('/', (req, res) => {
+router.get('/', auth, (req, res) => {
    
         Project.find(req.query)
             .exec()
@@ -198,7 +183,7 @@ router.get('/', (req, res) => {
     
 })
 
-router.get('/specific/:projectId', (req, res, next) => {
+router.get('/specific/:projectId', auth, (req, res, next) => {
     const projectId = req.params.projectId
     Project.findById(projectId)
         .exec()

@@ -12,28 +12,28 @@ const chatSchema = mongoose.Schema({
         {
             m_freelancer: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'User',
+                ref: 'Freelancer',
                 required: false
             }
         }
     ],
-    messages: [
-        { date: String },
-        { time: String },
-        { member: String },
-        { message: String },
-        { status: String },
-        {
+    messages: [{
+        date: String,
+        time: String,
+        member: String,
+        message: String,
+        status: String,
+        
             pin: {
-                type: String,
+                type: Boolean,
                 default: false
             }
-        },
-        { pinX: Number },
-        { pinY: Number },
-        { file: String },
-        { uploadProgress: Number }
-    ]
+        ,
+        pinX: Number,
+        pinY: Number ,
+        file: String ,
+        uploadProgress: Number 
+    }]
 })
 
 module.exports = mongoose.model('Chat', chatSchema)
