@@ -29,22 +29,19 @@ app.set('view engine', 'ejs');
 
 
 // App Middlewares
-app.use('/api/public', express.static('static'))
-app.use('/api/support', express.static('support'))
+app.use('/', express.static('dist'))
+app.use('/public', express.static('static'))
 app.use(morgan("dev"));
 app.use(cors());
 
+const useBodyParser = (req, res, next) => {
+  bodyParser.json()
+  bodyParser.urlencoded({extended: false})
+  next()
+}
 
-app.use((req, res, next) => {
-  if (req.originalUrl === "/payment/webhook") {
-    next();
-  } else {
-    bodyParser.json()(req, res, next);
-    bodyParser.urlencoded({ extended: false });
-  }
-});
 
-app.use(express.urlencoded({extended: true}));
+app.use(bodyParser())
 app.use(cookieParser());
 
 // Express Session
@@ -58,7 +55,7 @@ app.use(
       ttl: 24 * 60 * 60
     }),
     cookie: {
-      maxAge: 24 * 60 * 60 * 1000
+      maxAge: 365 * 24 * 60 * 60 * 1000
     }
   })
 );
@@ -70,21 +67,21 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 //for login
-app.post('/api/support/login', login)
+app.post('/api/support/login',useBodyParser, login)
 // Route Middlewares
 app.use("/api/project", projectRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/freelancer", freelancerRoutes);
 app.use("/api/payment", paymentRoutes);
-app.use("/api/support", supportauth, supportRoutes);
+app.use("/api/support", useBodyParser, supportauth, supportRoutes);
 
 
-// 404 Not Found
-app.use((req, res, next) => {
-  const error = new Error("Not Found");
-  error.status = 404;
-  res.redirect("https://www.peppershades.com/#/notfound")
-});
+// // 404 Not Found
+// app.use((req, res, next) => {
+//   const error = new Error("Not Found");
+//   error.status = 404;
+//   // res.redirect("https://www.peppershades.com/#/notfound")
+// });
 
 // Errors
 app.use((error, req, res, next) => {

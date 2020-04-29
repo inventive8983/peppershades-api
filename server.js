@@ -1,4 +1,4 @@
-const http = require('https');
+const http = require('http');
 const app = require('./app');
 const port = process.env.PORT || 4000;
 const projectio = require('./api/io/projectio')
@@ -9,7 +9,6 @@ const io = socketio(server);
 // const myIo = io.of('/api')
 
 io.on('connection', function (socket) {
-  console.log('Connected')
     socket.on('join-room', (data) => {
       socket.join(data.id);
       socket.to(data.id).emit('online', {
