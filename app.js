@@ -33,6 +33,7 @@ app.use('/api/public', express.static('static'))
 app.use('/api/support', express.static('support'))
 app.use(morgan("dev"));
 app.use(cors());
+app.options('*', cors());
 
 
 
