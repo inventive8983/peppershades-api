@@ -5,7 +5,7 @@ const projectio = require('./api/io/projectio')
 const socketio = require('socket.io');
 
 const server = http.createServer(app);
-const io = socketio(server);
+const io = socketio(server,{ origins: '*:*'});
 // const myIo = io.of('/api')
 
 io.on('connection', function (socket) {
